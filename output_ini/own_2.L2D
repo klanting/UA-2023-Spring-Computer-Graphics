@@ -1,0 +1,20 @@
+Alphabet = {F, G}
+
+Draw = {
+        F -> 1,
+        G -> 1
+}
+
+Rules = {
+        F 0.2 -> "F(+GGF)(-GGF)",
+        F 0.3 -> "F(+GF)(-F)",
+        F 0.15 -> "F(+F)(-GF)",
+        F 0.2 -> "F(+F)(--F)",
+        F 0.15 -> "F(++GF)(--F)",
+        G 1.0 -> "G"
+}
+
+Initiator     = "GGF"
+Angle         = 15
+StartingAngle = 90
+Iterations    = 8

@@ -1,0 +1,18 @@
+Alphabet = {F, G, H}
+
+Draw = {
+        F -> 1,
+        G -> 1,
+        H -> 1
+}
+
+Rules = {
+        F -> "F-F+G+F-F",
+        G -> "F+G-F-G+F",
+        H -> "H"
+}
+
+Initiator     = "G+F+G+F"
+Angle         = 90
+StartingAngle = 0
+Iterations    = 2
