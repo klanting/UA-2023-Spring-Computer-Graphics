@@ -7,11 +7,11 @@
 #include "Figure.h"
 #include "vector3d.h"
 namespace Bodies3D{
-    Figure* CreateCubes(Color &c);
-    Figure* CreateIcosahedron(Color &c);
-    Figure* CreateOctahedron(Color &c);
+    Figure* CreateCubes(const Color &c);
+    Figure* CreateIcosahedron(const Color &c);
+    Figure* CreateOctahedron(const Color &c);
     Figure* CreateDodecahedron(Color &c);
-    Figure* CreateCone(Color &c, int n, double height);
+    Figure* CreateCone(const Color &c, int n, double height);
     Figure* CreateCylinder(Color &c, int n, double height, bool all);
     Figure* CreateSphere(Color &c, int n);
     Figure* CreateTorus(Color &c, int n, int m, double r, double R);

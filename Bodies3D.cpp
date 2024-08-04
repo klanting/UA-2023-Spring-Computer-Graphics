@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <map>
 namespace Bodies3D{
-    Figure* CreateCubes(Color &c){
+    Figure* CreateCubes(const Color &c){
         vector<Vector3D> points;
         points.push_back(Vector3D::point(1, -1, -1));
         points.push_back(Vector3D::point(-1, 1, -1));
@@ -31,7 +31,7 @@ namespace Bodies3D{
         return fig;
     }
 
-    Figure* CreateIcosahedron(Color &c){
+    Figure* CreateIcosahedron(const Color &c){
         vector<Vector3D> points;
         for (int i=1; i <= 12; i++){
             if (i == 1){
@@ -77,7 +77,7 @@ namespace Bodies3D{
         return fig;
     }
 
-    Figure* CreateOctahedron(Color &c){
+    Figure* CreateOctahedron(const Color &c){
         vector<Vector3D> points;
         points.push_back(Vector3D::point(1, 0, 0));
         points.push_back(Vector3D::point(0, 1, 0));
@@ -133,7 +133,7 @@ namespace Bodies3D{
         return fig;
     }
 
-    Figure* CreateCone(Color &c, int n, double height){
+    Figure* CreateCone(const Color &c, int n, double height){
         vector<Vector3D> points;
         vector<vector<int>> faces;
         vector<int> base;

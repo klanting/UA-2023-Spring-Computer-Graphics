@@ -29,6 +29,8 @@
 #include "obj_parser.h"
 #include "CubeMap.h"
 #include "TextureCoord.h"
+#include "src/ObjectType/FigureType.h"
+#include "src/ObjectType/FigureFactory.h"
 using namespace std;
 using Lines2D = list<Line2D*>;
 
@@ -237,6 +239,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
             double cube_mapping_size = configuration["Figure"+to_string(i)]["cubeMapSize"].as_double_or_default(1);
 
 
+
             if (has_object){
                 string object_path = configuration["Figure"+to_string(i)]["objectPath"].as_string_or_die();
                 obj::OBJFile ob;
@@ -267,10 +270,13 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
 
             bool thick = false;
-            string figure_type = configuration["Figure"+to_string(i)]["type"].as_string_or_die();
-            if (figure_type.substr(0, 5) == "Thick"){
+            string figure_type_string = configuration["Figure" + to_string(i)]["type"].as_string_or_die();
+
+            FigureType figure_type = FigureType(figure_type_string);
+
+            if (figure_type_string.substr(0, 5) == "Thick"){
                 thick = true;
-                figure_type = figure_type.substr(5, figure_type.size()-5);
+                figure_type_string = figure_type_string.substr(5, figure_type_string.size() - 5);
             }
 
             ini::DoubleTuple c_tup;
@@ -305,184 +311,132 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
             ini::DoubleTuple center_tup = configuration["Figure"+to_string(i)]["center"].as_double_tuple_or_die();
             Vector3D center = Vector3D::point(center_tup[0], center_tup[1], center_tup[2]);
 
+
             Figure* f;
-            if(figure_type == "LineDrawing"){
-                int points_amount = configuration["Figure"+to_string(i)]["nrPoints"].as_int_or_die();
+            if (!figure_type.isFractal()){
+                if(figure_type_string == "LineDrawing"){
+                    int points_amount = configuration["Figure"+to_string(i)]["nrPoints"].as_int_or_die();
 
-                vector<Vector3D> points;
-                vector<vector<int>> lines;
-                for (int j=0; j<points_amount; j++){
-                    ini::DoubleTuple point_tup = configuration["Figure"+to_string(i)]["point"+to_string(j)].as_double_tuple_or_die();
-                    Vector3D p = Vector3D::point(point_tup[0], point_tup[1], point_tup[2]);
-                    points.push_back(p);
-                }
-
-                int lines_amount = configuration["Figure"+to_string(i)]["nrLines"].as_int_or_die();
-                for (int j=0; j<lines_amount; j++){
-                    ini::DoubleTuple point_index_tup = configuration["Figure"+to_string(i)]["line"+to_string(j)].as_double_tuple_or_die();
-                    vector<int> v;
-                    for (int k=0; k<point_index_tup.size(); k++){
-                        v.push_back((int) point_index_tup[k]);
+                    vector<Vector3D> points;
+                    vector<vector<int>> lines;
+                    for (int j=0; j<points_amount; j++){
+                        ini::DoubleTuple point_tup = configuration["Figure"+to_string(i)]["point"+to_string(j)].as_double_tuple_or_die();
+                        Vector3D p = Vector3D::point(point_tup[0], point_tup[1], point_tup[2]);
+                        points.push_back(p);
                     }
 
-                    lines.push_back(v);
+                    int lines_amount = configuration["Figure"+to_string(i)]["nrLines"].as_int_or_die();
+                    for (int j=0; j<lines_amount; j++){
+                        ini::DoubleTuple point_index_tup = configuration["Figure"+to_string(i)]["line"+to_string(j)].as_double_tuple_or_die();
+                        vector<int> v;
+                        for (int k=0; k<point_index_tup.size(); k++){
+                            v.push_back((int) point_index_tup[k]);
+                        }
+
+                        lines.push_back(v);
+                    }
+                    f = new Figure(points, lines, c);
+
+                }else if (figure_type_string == "Cube"){
+                    f = FigureFactory::create(figure_type, c, configuration["Figure"+to_string(i)]);
+
+                }else if (figure_type_string == "Icosahedron"){
+                    f = FigureFactory::create(figure_type, c, configuration["Figure"+to_string(i)]);
+
+                }else if (figure_type_string == "Octahedron"){
+                    f = FigureFactory::create(figure_type, c, configuration["Figure"+to_string(i)]);
+
+                }else if (figure_type_string == "Dodecahedron"){
+                    f = Bodies3D::CreateDodecahedron(c);
+
+                }else if (figure_type_string == "Cone"){
+                    f = FigureFactory::create(figure_type, c, configuration["Figure"+to_string(i)]);
+
+                }else if (figure_type_string == "Cylinder"){
+                    int n = configuration["Figure"+to_string(i)]["n"].as_int_or_die();
+                    double height = configuration["Figure"+to_string(i)]["height"].as_double_or_die();
+                    f = Bodies3D::CreateCylinder(c, n, height, true);
+
+                }else if (figure_type_string == "Sphere"){
+                    int n = configuration["Figure"+to_string(i)]["n"].as_int_or_die();
+                    f = Bodies3D::CreateSphere(c, n);
+
+                }else if (figure_type_string == "Torus"){
+                    int n = configuration["Figure"+to_string(i)]["n"].as_int_or_die();
+                    int m = configuration["Figure"+to_string(i)]["m"].as_int_or_die();
+                    double r = configuration["Figure"+to_string(i)]["r"].as_double_or_die();
+                    double R = configuration["Figure"+to_string(i)]["R"].as_double_or_die();
+                    f = Bodies3D::CreateTorus(c, n, m, r, R);
+
+                }else if (figure_type_string == "Tetrahedron"){
+                    f = Bodies3D::CreateTetrahedron(c);
+
+                }else if (figure_type_string == "3DLSystem"){
+                    string input_file = configuration["Figure"+to_string(i)]["inputfile"].as_string_or_die();
+
+                    LParser::LSystem3D l_system;
+
+                    std::ifstream input_stream(input_file);
+                    input_stream >> l_system;
+                    input_stream.close();
+
+                    L_system3D l(l_system, c);
+
+                    f = l.get_fig();
+
+                }else if (figure_type_string == "Mobius"){
+                    int n = configuration["Figure"+to_string(i)]["n"].as_int_or_die();
+                    int m = configuration["Figure"+to_string(i)]["m"].as_int_or_die();
+                    f = Bodies3D::CreateMobiusband(c, n, m);
+
+                }else if (figure_type_string == "TorusBelly") {
+                    int n = configuration["Figure" + to_string(i)]["n"].as_int_or_die();
+                    int m = configuration["Figure" + to_string(i)]["m"].as_int_or_die();
+                    f = Bodies3D::CreateTorusUmbilic(c, n, m);
+
+                }else if (figure_type_string == "BuckyBall") {
+                    f = Bodies3D::CreateBuckyBall(c);
+
                 }
-                f = new Figure(points, lines, c);
 
-                //TODO Rotation and ADD
                 f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
                 figures.push_back(f);
 
-            }else if (figure_type == "Cube"){
-                f = Bodies3D::CreateCubes(c);
+            }else if (figure_type.isFractal()){
 
-                //TODO Rotation and ADD
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                figures.push_back(f);
-            }else if (figure_type == "Icosahedron"){
-                f = Bodies3D::CreateIcosahedron(c);
-
-                //TODO Rotation and ADD
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                figures.push_back(f);
-            }else if (figure_type == "Octahedron"){
-                f = Bodies3D::CreateOctahedron(c);
-
-                //TODO Rotation and ADD
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                figures.push_back(f);
-            }else if (figure_type == "Dodecahedron"){
-                f = Bodies3D::CreateDodecahedron(c);
-
-                //TODO Rotation and ADD
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                figures.push_back(f);
-            }else if (figure_type == "Cone"){
-                int n = configuration["Figure"+to_string(i)]["n"].as_int_or_die();
-                double height = configuration["Figure"+to_string(i)]["height"].as_double_or_die();
-                f = Bodies3D::CreateCone(c, n, height);
-
-                //TODO Rotation and ADD
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                figures.push_back(f);
-            }else if (figure_type == "Cylinder"){
-                int n = configuration["Figure"+to_string(i)]["n"].as_int_or_die();
-                double height = configuration["Figure"+to_string(i)]["height"].as_double_or_die();
-                f = Bodies3D::CreateCylinder(c, n, height, true);
-
-                //TODO Rotation and ADD
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                figures.push_back(f);
-            }else if (figure_type == "Sphere"){
-                int n = configuration["Figure"+to_string(i)]["n"].as_int_or_die();
-                f = Bodies3D::CreateSphere(c, n);
-
-                //TODO Rotation and ADD
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                figures.push_back(f);
-            }else if (figure_type == "Torus"){
-                int n = configuration["Figure"+to_string(i)]["n"].as_int_or_die();
-                int m = configuration["Figure"+to_string(i)]["m"].as_int_or_die();
-                double r = configuration["Figure"+to_string(i)]["r"].as_double_or_die();
-                double R = configuration["Figure"+to_string(i)]["R"].as_double_or_die();
-                f = Bodies3D::CreateTorus(c, n, m, r, R);
-
-                //TODO Rotation and ADD
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                figures.push_back(f);
-            }else if (figure_type == "Tetrahedron"){
-                f = Bodies3D::CreateTetrahedron(c);
-
-                //TODO Rotation and ADD
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                figures.push_back(f);
-            }else if (figure_type == "3DLSystem"){
-                string input_file = configuration["Figure"+to_string(i)]["inputfile"].as_string_or_die();
-
-                LParser::LSystem3D l_system;
-
-                std::ifstream input_stream(input_file);
-                input_stream >> l_system;
-                input_stream.close();
-
-                L_system3D l(l_system, c);
-
-                f = l.get_fig();
-
-                //TODO Rotation and ADD
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                figures.push_back(f);
-            }else if (figure_type == "Mobius"){
-                int n = configuration["Figure"+to_string(i)]["n"].as_int_or_die();
-                int m = configuration["Figure"+to_string(i)]["m"].as_int_or_die();
-                f = Bodies3D::CreateMobiusband(c, n, m);
-
-                //TODO Rotation and ADD
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                figures.push_back(f);
-            }else if (figure_type == "TorusBelly") {
-                int n = configuration["Figure" + to_string(i)]["n"].as_int_or_die();
-                int m = configuration["Figure" + to_string(i)]["m"].as_int_or_die();
-                f = Bodies3D::CreateTorusUmbilic(c, n, m);
-
-                //TODO Rotation and ADD
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                figures.push_back(f);
-            }else if (figure_type == "BuckyBall") {
-                f = Bodies3D::CreateBuckyBall(c);
-
-                //TODO Rotation and ADD
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                figures.push_back(f);
-
-            }else if (figure_type == "FractalTetrahedron"){
                 int it = configuration["Figure"+to_string(i)]["nrIterations"].as_int_or_die();
-                double fractal_scale = configuration["Figure"+to_string(i)]["fractalScale"].as_double_or_die();
-                f = Bodies3D::CreateTetrahedron(c);
+
+                double fractal_scale;
+
+                if (figure_type_string != "MengerSponge"){
+                    fractal_scale = configuration["Figure"+to_string(i)]["fractalScale"].as_double_or_die();
+                }else{
+                    fractal_scale = 3;
+                }
+
+                if (figure_type_string == "FractalTetrahedron"){
+                    f = Bodies3D::CreateTetrahedron(c);
+                }else if (figure_type_string == "FractalCube"){
+                    f = FigureFactory::create(figure_type, c, configuration["Figure"+to_string(i)]);
+                }else if (figure_type_string == "FractalIcosahedron"){
+                    f = FigureFactory::create(figure_type, c, configuration["Figure"+to_string(i)]);
+                }else if (figure_type_string == "FractalOctahedron"){
+                    f = FigureFactory::create(figure_type, c, configuration["Figure"+to_string(i)]);
+                }else if (figure_type_string == "FractalDodecahedron"){
+                    f = Bodies3D::CreateDodecahedron(c);
+                }else if (figure_type_string == "FractalBuckyBall"){
+                    f = Bodies3D::CreateBuckyBall(c);
+                }else if (figure_type_string == "MengerSponge"){
+                    f = Bodies3D::CreateMengerSpons(c);
+                }
+
                 f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
                 f->difuus_color = d;
                 f->spiegeld_color = s;
                 f->reflectie_index = specular_index;
 
                 bool texture_mapping = configuration["Figure"+to_string(i)]["textureMapping"].as_bool_or_default(false);
-                if (texture_mapping){
-                    string path = configuration["Figure"+to_string(i)]["texturePath"].as_string_or_die();
 
-                    ini::DoubleTuple P = configuration["Figure"+to_string(i)]["textureP"].as_double_tuple_or_die();
-                    ini::DoubleTuple A = configuration["Figure"+to_string(i)]["textureA"].as_double_tuple_or_die();
-                    ini::DoubleTuple B = configuration["Figure"+to_string(i)]["textureB"].as_double_tuple_or_die();
-
-                    Vector3D Pv = Vector3D::point(P[0], P[1], P[2]);
-                    Vector3D Pa = Vector3D::vector(A[0], A[1], A[2]);
-                    Vector3D Pb = Vector3D::vector(B[0], B[1], B[2]);
-
-
-                    TextureMap* t = new TextureMap(path, Pv, Pa, Pb);
-                    f->useTexture = true;
-                    f->texture = t;
-                }
-
-                Bodies3D::generateFractal(f, figures, it, fractal_scale, fractal_scale, "Tetrahedron");
-
-            }else if (figure_type == "FractalCube"){
-                int it = configuration["Figure"+to_string(i)]["nrIterations"].as_int_or_die();
-                double fractal_scale = configuration["Figure"+to_string(i)]["fractalScale"].as_double_or_die();
-                f = Bodies3D::CreateCubes(c);
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                f->difuus_color = d;
-                f->spiegeld_color = s;
-                f->reflectie_index = specular_index;
-                Bodies3D::generateFractal(f, figures, it, fractal_scale, fractal_scale, "Cube");
-            }else if (figure_type == "FractalIcosahedron"){
-                int it = configuration["Figure"+to_string(i)]["nrIterations"].as_int_or_die();
-                double fractal_scale = configuration["Figure"+to_string(i)]["fractalScale"].as_double_or_die();
-                f = Bodies3D::CreateIcosahedron(c);
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                f->difuus_color = d;
-                f->spiegeld_color = s;
-                f->reflectie_index = specular_index;
-
-                bool texture_mapping = configuration["Figure"+to_string(i)]["textureMapping"].as_bool_or_default(false);
                 if (texture_mapping){
                     string path = configuration["Figure"+to_string(i)]["texturePath"].as_string_or_die();
 
@@ -501,122 +455,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                 }
                 f->ambient_intensiteit = a_int;
 
-                Bodies3D::generateFractal(f, figures, it, fractal_scale, fractal_scale, "Icosahedron");
-            }else if (figure_type == "FractalOctahedron"){
-                int it = configuration["Figure"+to_string(i)]["nrIterations"].as_int_or_die();
-                double fractal_scale = configuration["Figure"+to_string(i)]["fractalScale"].as_double_or_die();
-                f = Bodies3D::CreateOctahedron(c);
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                f->difuus_color = d;
-                f->spiegeld_color = s;
-                f->reflectie_index = specular_index;
-
-                bool texture_mapping = configuration["Figure"+to_string(i)]["textureMapping"].as_bool_or_default(false);
-                if (texture_mapping){
-                    string path = configuration["Figure"+to_string(i)]["texturePath"].as_string_or_die();
-
-                    ini::DoubleTuple P = configuration["Figure"+to_string(i)]["textureP"].as_double_tuple_or_die();
-                    ini::DoubleTuple A = configuration["Figure"+to_string(i)]["textureA"].as_double_tuple_or_die();
-                    ini::DoubleTuple B = configuration["Figure"+to_string(i)]["textureB"].as_double_tuple_or_die();
-
-                    Vector3D Pv = Vector3D::point(P[0], P[1], P[2]);
-                    Vector3D Pa = Vector3D::vector(A[0], A[1], A[2]);
-                    Vector3D Pb = Vector3D::vector(B[0], B[1], B[2]);
-
-
-                    TextureMap* t = new TextureMap(path, Pv, Pa, Pb);
-                    f->useTexture = true;
-                    f->texture = t;
-                }
-                f->ambient_intensiteit = a_int;
-
-                Bodies3D::generateFractal(f, figures, it, fractal_scale, fractal_scale, "Octahedron");
-            }else if (figure_type == "FractalDodecahedron"){
-                int it = configuration["Figure"+to_string(i)]["nrIterations"].as_int_or_die();
-                double fractal_scale = configuration["Figure"+to_string(i)]["fractalScale"].as_double_or_die();
-                f = Bodies3D::CreateDodecahedron(c);
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                f->difuus_color = d;
-                f->spiegeld_color = s;
-                f->reflectie_index = specular_index;
-
-                bool texture_mapping = configuration["Figure"+to_string(i)]["textureMapping"].as_bool_or_default(false);
-                if (texture_mapping){
-                    string path = configuration["Figure"+to_string(i)]["texturePath"].as_string_or_die();
-
-                    ini::DoubleTuple P = configuration["Figure"+to_string(i)]["textureP"].as_double_tuple_or_die();
-                    ini::DoubleTuple A = configuration["Figure"+to_string(i)]["textureA"].as_double_tuple_or_die();
-                    ini::DoubleTuple B = configuration["Figure"+to_string(i)]["textureB"].as_double_tuple_or_die();
-
-                    Vector3D Pv = Vector3D::point(P[0], P[1], P[2]);
-                    Vector3D Pa = Vector3D::vector(A[0], A[1], A[2]);
-                    Vector3D Pb = Vector3D::vector(B[0], B[1], B[2]);
-
-
-                    TextureMap* t = new TextureMap(path, Pv, Pa, Pb);
-                    f->useTexture = true;
-                    f->texture = t;
-                }
-                f->ambient_intensiteit = a_int;
-
-                Bodies3D::generateFractal(f, figures, it, fractal_scale, fractal_scale, "Dodecahedron");
-            }else if (figure_type == "FractalBuckyBall"){
-                int it = configuration["Figure"+to_string(i)]["nrIterations"].as_int_or_die();
-                double fractal_scale = configuration["Figure"+to_string(i)]["fractalScale"].as_double_or_die();
-                f = Bodies3D::CreateBuckyBall(c);
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                f->difuus_color = d;
-                f->spiegeld_color = s;
-                f->reflectie_index = specular_index;
-
-                bool texture_mapping = configuration["Figure"+to_string(i)]["textureMapping"].as_bool_or_default(false);
-                if (texture_mapping){
-                    string path = configuration["Figure"+to_string(i)]["texturePath"].as_string_or_die();
-
-                    ini::DoubleTuple P = configuration["Figure"+to_string(i)]["textureP"].as_double_tuple_or_die();
-                    ini::DoubleTuple A = configuration["Figure"+to_string(i)]["textureA"].as_double_tuple_or_die();
-                    ini::DoubleTuple B = configuration["Figure"+to_string(i)]["textureB"].as_double_tuple_or_die();
-
-                    Vector3D Pv = Vector3D::point(P[0], P[1], P[2]);
-                    Vector3D Pa = Vector3D::vector(A[0], A[1], A[2]);
-                    Vector3D Pb = Vector3D::vector(B[0], B[1], B[2]);
-
-
-                    TextureMap* t = new TextureMap(path, Pv, Pa, Pb);
-                    f->useTexture = true;
-                    f->texture = t;
-                }
-                f->ambient_intensiteit = a_int;
-
-                Bodies3D::generateFractal(f, figures, it, fractal_scale, fractal_scale, "BuckyBall");
-            }else if (figure_type == "MengerSponge"){
-                int it = configuration["Figure"+to_string(i)]["nrIterations"].as_int_or_die();
-                f = Bodies3D::CreateMengerSpons(c);
-                f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
-                f->difuus_color = d;
-                f->spiegeld_color = s;
-                f->reflectie_index = specular_index;
-
-                bool texture_mapping = configuration["Figure"+to_string(i)]["textureMapping"].as_bool_or_default(false);
-                if (texture_mapping){
-                    string path = configuration["Figure"+to_string(i)]["texturePath"].as_string_or_die();
-
-                    ini::DoubleTuple P = configuration["Figure"+to_string(i)]["textureP"].as_double_tuple_or_die();
-                    ini::DoubleTuple A = configuration["Figure"+to_string(i)]["textureA"].as_double_tuple_or_die();
-                    ini::DoubleTuple B = configuration["Figure"+to_string(i)]["textureB"].as_double_tuple_or_die();
-
-                    Vector3D Pv = Vector3D::point(P[0], P[1], P[2]);
-                    Vector3D Pa = Vector3D::vector(A[0], A[1], A[2]);
-                    Vector3D Pb = Vector3D::vector(B[0], B[1], B[2]);
-
-
-                    TextureMap* t = new TextureMap(path, Pv, Pa, Pb);
-                    f->useTexture = true;
-                    f->texture = t;
-                }
-                f->ambient_intensiteit = a_int;
-
-                Bodies3D::generateFractal(f, figures, it, 3, 3, "MengerSponge");
+                Bodies3D::generateFractal(f, figures, it, fractal_scale, fractal_scale, figure_type.getFractalFree());
             }
 
 
@@ -780,6 +619,7 @@ int main(int argc, char const* argv[])
                 }
                 for(std::string fileName : args)
                 {
+                        std::cout << "checking file: " << fileName << std::endl;
                         ini::Configuration conf;
                         try
                         {

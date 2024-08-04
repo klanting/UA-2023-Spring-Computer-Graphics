@@ -22,7 +22,12 @@ set(engine_sources
 	l_parser.cc
 	l_parser.h
 		Point2D.cpp Point2D.h Color.cpp Color.h Line2D.cpp Line2D.h tools2D.cpp tools2D.h L_system.cpp L_system.h
-		vector3d.cc vector3d.h Face.cpp Face.h Figure.cpp Figure.h Bodies3D.cpp Bodies3D.h L_system3D.cpp L_system3D.h Z_buffer.cpp Z_buffer.h Clipping.cpp Clipping.h Light.cpp Light.h LightTools.cpp LightTools.h BufferStorage.cpp BufferStorage.h ShadowMask.cpp ShadowMask.h TextureMap.cpp TextureMap.h obj_parser.cc obj_parser.h CubeMap.cpp CubeMap.h CubeMapVertex.cpp CubeMapVertex.h CubeMapFace.cpp CubeMapFace.h TextureCoord.cpp TextureCoord.h)
+		vector3d.cc vector3d.h Face.cpp Face.h Figure.cpp Figure.h Bodies3D.cpp Bodies3D.h L_system3D.cpp L_system3D.h Z_buffer.cpp Z_buffer.h Clipping.cpp Clipping.h Light.cpp Light.h LightTools.cpp LightTools.h BufferStorage.cpp BufferStorage.h ShadowMask.cpp ShadowMask.h TextureMap.cpp TextureMap.h obj_parser.cc obj_parser.h CubeMap.cpp CubeMap.h CubeMapVertex.cpp CubeMapVertex.h CubeMapFace.cpp CubeMapFace.h TextureCoord.cpp TextureCoord.h
+		src/ObjectType/FigureType.cpp
+		src/ObjectType/FigureType.h
+		src/ObjectType/FigureFactory.cpp
+		src/ObjectType/FigureFactory.h
+)
 
 ############################################################
 # Create an executable
