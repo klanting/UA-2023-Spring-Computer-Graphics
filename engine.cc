@@ -156,7 +156,6 @@ void checkTextureMapping(Figure* f, const ini::SectionReader& sr){
         f->useTexture = true;
         f->texture = t;
     }
-
 }
 
 img::EasyImage generate_image(const ini::Configuration &configuration)

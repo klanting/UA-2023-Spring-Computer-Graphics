@@ -75,8 +75,6 @@ namespace LightTools {
         vector<double> anglesbeta;
         Vector3D normaal_copy = normaal;
 
-
-
         normaal_copy.normalise();
         for (auto l: lights){
             if (!l->impact){

@@ -1,10 +1,7 @@
-//
-// Created by tibov on 24/03/23.
-//
+
 
 #include "Z_buffer.h"
 #include <limits>
-#include "iostream"
 #include <cstdlib>
 using namespace std;
 Z_buffer::Z_buffer(unsigned int width, unsigned int height): width(width), height(height) {
