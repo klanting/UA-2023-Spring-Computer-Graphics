@@ -102,7 +102,7 @@ namespace Bodies3D{
         return fig;
     }
 
-    Figure* CreateDodecahedron(Color &c){
+    Figure* CreateDodecahedron(const Color &c){
         vector<Vector3D> points;
         Figure* iso = CreateIcosahedron(c);
         for (auto face: iso->faces){
@@ -159,7 +159,7 @@ namespace Bodies3D{
         return fig;
     }
 
-    Figure* CreateCylinder(Color &c, int n, double height, bool all){
+    Figure* CreateCylinder(const Color &c, int n, double height, bool all){
         vector<Vector3D> points;
         vector<vector<int>> faces;
         vector<int> base;
@@ -191,7 +191,7 @@ namespace Bodies3D{
         return fig;
     }
 
-    Figure* CreateSphere(Color &c, int n){
+    Figure* CreateSphere(const Color &c, int n){
         Figure* iso = CreateIcosahedron(c);
         for (int i=0; i<n; i++){
             vector<Face> new_faces;
@@ -231,7 +231,7 @@ namespace Bodies3D{
         return iso;
     }
 
-    Figure* CreateTorus(Color &c, int n, int m, double r, double R){
+    Figure* CreateTorus(const Color &c, int n, int m, double r, double R){
         vector<Vector3D> points;
         vector<vector<int>> faces;
         for (int i = 0; i<n; i++){
@@ -256,7 +256,7 @@ namespace Bodies3D{
         return fig;
     }
 
-    Figure* CreateTetrahedron(Color &c){
+    Figure* CreateTetrahedron(const Color &c){
         vector<Vector3D> points;
         vector<vector<int>> faces;
 
@@ -274,7 +274,7 @@ namespace Bodies3D{
         return fig;
     }
 
-    Figure* CreateMobiusband(Color &c, int n, int m){
+    Figure* CreateMobiusband(const Color &c, int n, int m){
         vector<Vector3D> points;
         vector<vector<int>> faces;
         for (int i = 0; i<n; i++){
@@ -312,7 +312,7 @@ namespace Bodies3D{
         return fig;
     }
 
-    Figure* CreateTorusUmbilic(Color &c, int n, int m){
+    Figure* CreateTorusUmbilic(const Color &c, int n, int m){
         vector<Vector3D> points;
         vector<vector<int>> faces;
         for (int i = 0; i<n; i++){
@@ -358,7 +358,7 @@ namespace Bodies3D{
         return fig;
     }
 
-    Figure* CreateBuckyBall(Color &c){
+    Figure* CreateBuckyBall(const Color &c){
         vector<Vector3D> new_points;
         vector<vector<int>> new_faces;
         map<int, map<int, int>> change_pos;
@@ -493,7 +493,7 @@ namespace Bodies3D{
 
     }
 
-    Figure* CreateMengerSpons(Color &c){
+    Figure* CreateMengerSponge(const Color &c){
         Figure* fig = CreateCubes(c);
         fig->points.push_back(Vector3D::point(-1, 0, -1));
         fig->points.push_back(Vector3D::point(-1, 0, 1));
@@ -534,7 +534,7 @@ namespace Bodies3D{
             }else if (type =="BuckyBall"){
                 new_sub_figure = CreateBuckyBall(fig->ambient_color);
             }else if (type =="MengerSponge"){
-                new_sub_figure = CreateMengerSpons(fig->ambient_color);
+                new_sub_figure = CreateMengerSponge(fig->ambient_color);
             }
 
 
