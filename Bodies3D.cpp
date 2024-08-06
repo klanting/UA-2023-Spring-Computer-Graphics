@@ -10,6 +10,7 @@
 namespace Bodies3D{
     Figure* CreateCubes(const Color &c){
         vector<Vector3D> points;
+
         points.push_back(Vector3D::point(1, -1, -1));
         points.push_back(Vector3D::point(-1, 1, -1));
         points.push_back(Vector3D::point(1, 1, 1));
@@ -20,6 +21,7 @@ namespace Bodies3D{
         points.push_back(Vector3D::point(-1, 1, 1));
 
         vector<vector<int>> faces;
+
         faces.push_back({0, 4, 2, 6});
         faces.push_back({4, 1, 7, 2});
         faces.push_back({1, 5, 3, 7});
@@ -33,6 +35,8 @@ namespace Bodies3D{
 
     Figure* CreateIcosahedron(const Color &c){
         vector<Vector3D> points;
+
+
         for (int i=1; i <= 12; i++){
             if (i == 1){
                 points.push_back(Vector3D::point(0, 0, sqrt(5)/2.0));

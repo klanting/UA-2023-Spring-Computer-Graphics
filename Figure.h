@@ -41,7 +41,6 @@ public:
     void EyeUnPerspectifTransform(const Vector3D &eye_cords);
     void EyePerspectifTransform(const Vector3D &eye_cords, const Vector3D& view_dir);
     void DoProjection(double d);
-    vector<double> RangesProjection(double d);
     void RotateX(double angle_degree);
     void RotateY(double angle_degree);
     void RotateZ(double angle_degree);

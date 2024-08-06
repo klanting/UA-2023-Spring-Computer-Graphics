@@ -11,20 +11,25 @@ EyePerspective::EyePerspective(const Vector3D &eye): eye{eye} {
     double theta = atan2(eye.y, eye.x);
     double phi = acos(temp);
 
-    eye_matrix_point(1, 1) = -sin(theta);
-    eye_matrix_point(1, 2) = -cos(theta) * cos(phi);
-    eye_matrix_point(1, 3) = cos(theta) * sin(phi);
-    eye_matrix_point(2, 1) = cos(theta);
-    eye_matrix_point(2, 2) = -sin(theta) * cos(phi);
-    eye_matrix_point(2, 3) = sin(theta) * sin(phi);
-    eye_matrix_point(3, 2) = sin(phi);
-    eye_matrix_point(3, 3) = cos(phi);
+    eye_matrix_pointless(1, 1) = -sin(theta);
+    eye_matrix_pointless(1, 2) = -cos(theta) * cos(phi);
+    eye_matrix_pointless(1, 3) = cos(theta) * sin(phi);
+    eye_matrix_pointless(2, 1) = cos(theta);
+    eye_matrix_pointless(2, 2) = -sin(theta) * cos(phi);
+    eye_matrix_pointless(2, 3) = sin(theta) * sin(phi);
+    eye_matrix_pointless(3, 2) = sin(phi);
+    eye_matrix_pointless(3, 3) = cos(phi);
+
+    eye_matrix_point = eye_matrix_pointless;
+    eye_matrix_point(4, 3) = -r;
 
     eye_matrix_point_inverse = eye_matrix_point;
-    eye_matrix_pointless_inverse = eye_matrix_point;
-    eye_matrix_point_inverse(4, 3) = -r;
 
-    eye_matrix_point.inv();
+
+    eye_matrix_pointless_inverse = eye_matrix_pointless;
+
+
+    eye_matrix_point_inverse.inv();
     eye_matrix_pointless_inverse.inv();
 
 }
@@ -43,6 +48,10 @@ const Matrix &EyePerspective::getEyeMatrixPointInverse() const {
 
 const Matrix &EyePerspective::getEyeMatrixPointlessInverse() const {
     return eye_matrix_pointless_inverse;
+}
+
+const Matrix &EyePerspective::getEyeMatrixPointLess() const {
+    return eye_matrix_pointless;
 }
 
 const Matrix &EyePerspective::getEyeMatrixPoint() const {

@@ -4,7 +4,7 @@
 
 #ifndef ENGINE_COLOR_H
 #define ENGINE_COLOR_H
-
+#include <cmath>
 
 class Color {
 public:

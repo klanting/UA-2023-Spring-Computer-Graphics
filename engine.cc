@@ -9,7 +9,6 @@
 #include <list>
 #include <algorithm>
 
-#include "Point2D.h"
 #include "Line2D.h"
 #include "Color.h"
 #include "tools2D.h"
@@ -17,21 +16,19 @@
 #include "vector3d.h"
 #include "Figure.h"
 #include "Bodies3D.h"
-#include "L_system3D.h"
 #include <cmath>
-#include "Point2D.h"
-#include <limits>
 #include "Clipping.h"
 #include "Light.h"
 #include "LightTools.h"
 #include "ShadowMask.h"
-#include "TextureMap.h"
+
 #include "obj_parser.h"
 #include "CubeMap.h"
 #include "TextureCoord.h"
 #include "src/ObjectType/FigureType.h"
 #include "src/ObjectType/FigureFactory.h"
 #include "src/Perspective/EyePerspective.h"
+#include "src/Configuration/ConfigurationChecks.h"
 using namespace std;
 using Lines2D = list<Line2D*>;
 
@@ -134,28 +131,6 @@ CubeMap* ReadObject(const obj::MTLLibrary& mtl, double max){
 
     return c_map;
 
-}
-
-void checkTextureMapping(Figure* f, const ini::SectionReader& sr){
-    bool texture_mapping = sr.getBoolValue("textureMapping");
-
-    if (texture_mapping){
-        string path = sr.getStringValue("texturePath");
-
-
-        ini::DoubleTuple P = sr.getDoubleTuple("textureP");
-        ini::DoubleTuple A = sr.getDoubleTuple("textureA");
-        ini::DoubleTuple B = sr.getDoubleTuple("textureB");
-
-        Vector3D Pv = Vector3D::point(P[0], P[1], P[2]);
-        Vector3D Pa = Vector3D::vector(A[0], A[1], A[2]);
-        Vector3D Pb = Vector3D::vector(B[0], B[1], B[2]);
-
-
-        TextureMap* t = new TextureMap(path, Pv, Pa, Pb);
-        f->useTexture = true;
-        f->texture = t;
-    }
 }
 
 img::EasyImage generate_image(const ini::Configuration &configuration)
@@ -334,19 +309,15 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
             Figure* f = FigureFactory::create(figure_type, sr);
             f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
 
-            if (!figure_type.isFractal()){
-                figures.push_back(f);
+            f->difuus_color = d;
+            f->spiegeld_color = s;
+            f->reflectie_index = specular_index;
+            f->ambient_intensiteit = a_int;
 
-            }else if (figure_type.isFractal()){
 
-                f->difuus_color = d;
-                f->spiegeld_color = s;
-                f->reflectie_index = specular_index;
+            ConfigurationChecks::checkTextureMapping(f, sr);
 
-                checkTextureMapping(f, sr);
-
-                f->ambient_intensiteit = a_int;
-
+            if (figure_type.isFractal()){
                 double fractal_scale;
 
                 int it = section["nrIterations"].as_int_or_die();
@@ -357,13 +328,16 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                 }
 
                 Bodies3D::generateFractal(f, figures, it, fractal_scale, fractal_scale, figure_type.getFractalFree());
+            }else{
+                figures.push_back(f);
+
             }
 
-            checkTextureMapping(f, sr);
+
 
             f->cube_mapping = do_cube_mapping;
             if (do_cube_mapping){
-                string mtl_path = section["cubeMapPath"].as_string_or_die();
+                string mtl_path = sr.getStringValue("cubeMapPath");
                 obj::MTLLibrary mtl;
                 ifstream mtl_file(mtl_path);
                 mtl_file >> mtl;
@@ -372,12 +346,6 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                 CubeMap* c_map = ReadObject(mtl, cube_mapping_size);
                 f->cube_map = c_map;
             }
-
-
-            f->difuus_color = d;
-            f->spiegeld_color = s;
-            f->reflectie_index = specular_index;
-            f->ambient_intensiteit = a_int;
 
             if(thick){
                 double thick_scale = section["radius"].as_double_or_die();
@@ -415,7 +383,6 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                 double hfov = M_PI/180*configuration["General"]["hfov"].as_double_or_die();
                 double dNear = configuration["General"]["dNear"].as_double_or_die();
                 double dFar = configuration["General"]["dFar"].as_double_or_die();
-                //double dRight = lround(dNear * tan(hfov/2.0)*10000.0)/10000.0;
                 double dRight = dNear * tan(hfov/2.0);
                 double aspect_ratio = configuration["General"]["aspectRatio"].as_double_or_die();
                 double dTop = dRight/aspect_ratio;

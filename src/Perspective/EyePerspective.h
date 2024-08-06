@@ -20,11 +20,13 @@ public:
 
     const Matrix &getEyeMatrixPointlessInverse() const;
 
+    const Matrix &getEyeMatrixPointLess() const;
     const Matrix &getEyeMatrixPoint() const;
 
 private:
     Vector3D eye;
     Matrix eye_matrix_point_inverse;
+    Matrix eye_matrix_pointless;
     Matrix eye_matrix_point;
     Matrix eye_matrix_pointless_inverse;
     double r;

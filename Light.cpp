@@ -117,13 +117,6 @@ void Light::MakeShadowBuffer(const vector<Figure *> &figures) {
             double k = w1*A.x+w2*A.y+w3*A.z;
             face.dzdx = w1/(-d*k);
             face.dzdy = w2/(-d*k);
-            /*
-            if (k <= 0){face.normaal = Vector3D::point(w1, w2, w3);
-
-            }else{
-                face.normaal = -1*Vector3D::point(w1, w2, w3);
-                face.inversed = true;
-            }*/
 
         }
 
@@ -173,7 +166,7 @@ void Light::MakeShadowBuffer(const vector<Figure *> &figures) {
                         valid_x_i.push_back(x_i);
                     }
                 }
-                if (valid_x_i.size() == 0){
+                if (valid_x_i.empty()){
                     continue;
                 }
 
@@ -227,43 +220,28 @@ bool Light::same(const Vector3D &normal_point) {
     Vector3D point_L = normal_point*eyeMatrix;
     Vector3D point_D = Vector3D::point(point_L.x*d/(-point_L.z)+dx, point_L.y*d/(-point_L.z)+dy, point_L.z);
 
-    vector<double> change = {0};
+    double alpha_x = point_D.x - floor(point_D.x);
+    double alpha_y = point_D.y - floor(point_D.y);
 
-    for (int i =0; i< change.size(); i++){
-        point_D.x = point_D.x + change[i];
-        point_D.y = point_D.y + change[i];
+    double diff_A = (*mask)[floor(point_D.x)][ceil(point_D.y)];
+    double diff_B = (*mask)[ceil(point_D.x)][ceil(point_D.y)];
+    double diff_C = (*mask)[floor(point_D.x)][floor(point_D.y)];
+    double diff_D = (*mask)[ceil(point_D.x)][floor(point_D.y)];
 
-        double alpha_x = point_D.x - floor(point_D.x);
-        double alpha_y = point_D.y - floor(point_D.y);
+    double diff_E = (1-alpha_x)*diff_A + alpha_x*diff_B;
+    double diff_F = (1-alpha_x)*diff_C + alpha_x*diff_D;
 
-        double diff_A = (*mask)[floor(point_D.x)][ceil(point_D.y)];
-        double diff_B = (*mask)[ceil(point_D.x)][ceil(point_D.y)];
-        double diff_C = (*mask)[floor(point_D.x)][floor(point_D.y)];
-        double diff_D = (*mask)[ceil(point_D.x)][floor(point_D.y)];
+    double z_val = alpha_y*diff_E+(1-alpha_y)*diff_F;
 
-        double diff_E = (1-alpha_x)*diff_A + alpha_x*diff_B;
-        double diff_F = (1-alpha_x)*diff_C + alpha_x*diff_D;
 
-        double z_val = alpha_y*diff_E+(1-alpha_y)*diff_F;
-        //z_val = (*mask)[::lround(point_D.x)][::lround(point_D.y)];
+    if(!isfinite(diff_A) || !isfinite(diff_B) || !isfinite(diff_C) || !isfinite(diff_D)){
+        return true;
 
-        if(!isfinite(diff_A) || !isfinite(diff_B) || !isfinite(diff_C) || !isfinite(diff_D)){
-            //z_val = min(min(diff_A, diff_B), min(diff_C, diff_D));
-            return true;
-            //return false;
-        }
-        double change = max(max(diff_A, diff_B), max(diff_C, diff_D)) - min(min(diff_A, diff_B), min(diff_C, diff_D));
-        //double z_val = (*mask)[(unsigned int) roundl(point_D.x)][(unsigned int) roundl(point_D.y)];
-        //z_val = (*mask)[(unsigned int) roundl(point_D.x)][(unsigned int) roundl(point_D.y)];
-        double v = 1/point_D.z;
-        //if (abs(z_val- 1/point_D.z) < 0.00012*9000/d){
-        //if (abs(z_val- 1/point_D.z) < 0.0001*8000/d){
-        //if (abs(z_val- 1/point_D.z) < 0.8*change){
-        //if (abs(z_val- 1/point_D.z) < 0.0001*11000/d){
-        if ((1/point_D.z) < z_val+0.0001*11000/d){
-            //if (abs(z_val- 1/point_D.z) < 0.0001){
-            return true;
-        }
+    }
+
+
+    if ((1/point_D.z) < z_val+0.0001*11000/d){
+        return true;
     }
 
     return false;

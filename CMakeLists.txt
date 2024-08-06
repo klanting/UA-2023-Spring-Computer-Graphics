@@ -31,6 +31,8 @@ set(engine_sources
 		src/Configuration/SectionReader.h
 		src/Perspective/EyePerspective.cpp
 		src/Perspective/EyePerspective.h
+		src/Configuration/ConfigurationChecks.cpp
+		src/Configuration/ConfigurationChecks.h
 )
 
 ############################################################

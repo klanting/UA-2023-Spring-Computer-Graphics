@@ -8,15 +8,25 @@
 #include <limits>
 
 Figure::Figure(const vector<Vector3D> &points, const vector<vector<int>> &lines, const Color &c) : points(points), ambient_color(c){
-    for (auto line: lines){
-        faces.push_back(Face(line));
+    faces.reserve(lines.size());
+
+    /*
+     * Store each list of integers as a face
+     * */
+    for (const auto& line: lines){
+        faces.emplace_back(line);
     }
 }
 
 Figure::Figure(const vector<Vector3D> &points, const vector<vector<int>> &lines, const vector<vector<Vector3D>> &uv, const vector<vector<Vector3D>> &v_normaal,
                const Color &c) : points(points), ambient_color(c) {
-    for (auto line: lines){
-        faces.push_back(Face(line));
+
+    faces.reserve(lines.size());
+    /*
+     * Store each list of integers as a face
+     * */
+    for (const auto& line: lines){
+        faces.emplace_back(line);
     }
 
     for (int i=0; i<faces.size(); i++){
@@ -75,12 +85,6 @@ void Figure::EyePerspectifTransform(const Vector3D &eye_cords, const Vector3D& v
     eyeMatrix(3,2) = sin(phi);
     eyeMatrix(3,3) = cos(phi);
 
-    /*
-    if (useTexture){
-        texture->a = texture->a*eyeMatrix;
-        texture->b = texture->b*eyeMatrix;
-    }*/
-
     eyeMatrix(4,3) = -r;
 
 
@@ -88,10 +92,6 @@ void Figure::EyePerspectifTransform(const Vector3D &eye_cords, const Vector3D& v
         point = point*eyeMatrix;
     }
 
-    /*
-    if (useTexture){
-        texture->p = texture->p*eyeMatrix;
-    }*/
 }
 
 
@@ -228,36 +228,6 @@ void Figure::Triangulate() {
     faces = new_faces;
 }
 
-vector<double> Figure::RangesProjection(double d) {
-    double min_x = numeric_limits<double>::max();
-    double max_x = numeric_limits<double>::min();
-    double min_y = numeric_limits<double>::max();
-    double max_y = numeric_limits<double>::min();
-
-    for (auto &point: points){
-        double x_acc = d*point.x/(-point.z);
-        double y_acc = d*point.y/(-point.z);
-        if (x_acc < min_x){
-            min_x = x_acc;
-        }
-
-        if (x_acc> max_x){
-            max_x = x_acc;
-        }
-
-        if (y_acc < min_y){
-            min_y = y_acc;
-        }
-
-        if (y_acc > max_y){
-            max_y = y_acc;
-        }
-    }
-
-    vector<double> result = {min_x, max_x, min_y, max_y};
-    return result;
-}
-
 void Figure::UndoProjection(double d) {
 
     for (auto &point: points){
@@ -322,6 +292,9 @@ Vector3D Figure::getOriginal(const Vector3D &point, bool has_point) {
         return Vector3D::point(0, 0, 0);
     }
 
+    auto a = eye_perspective->getEyeMatrixPointInverse();
+    auto b = eye_perspective->getEyeMatrixPointlessInverse();
+
     if (has_point){
 
         return point*eye_perspective->getEyeMatrixPointInverse();
@@ -337,7 +310,7 @@ void Figure::EyeTransformFace() {
 
     for(auto& face: faces){
         for(auto& v: face.normaal_map){
-            v.second = v.second*eye_perspective->getEyeMatrixPoint();
+            v.second = v.second* eye_perspective->getEyeMatrixPointLess();
         }
 
     }

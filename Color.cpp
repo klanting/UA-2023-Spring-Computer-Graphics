@@ -14,15 +14,7 @@ void Color::multiply(const Color &c) {
     green = green*c.green;
     blue = blue*c.blue;
 
-    if (red > 1){
-        red = 1.0;
-    }
-
-    if (green > 1){
-        green = 1.0;
-    }
-
-    if (blue > 1){
-        blue = 1.0;
-    }
+    red = std::min(red, 1.0);
+    green = std::min(green, 1.0);
+    blue = std::min(blue, 1.0);
 }

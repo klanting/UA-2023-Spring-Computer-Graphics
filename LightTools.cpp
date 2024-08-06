@@ -72,10 +72,10 @@ namespace LightTools {
 
     Color DifuusSpecularLicht(const vector<Light*>& lights, const Vector3D& normaal, const Vector3D& point, const Color& difuus_ref, const Color& specular_ref, double reflectie_index){
         vector<double> angles;
+        angles.reserve(lights.size());
         vector<double> anglesbeta;
-        Vector3D normaal_copy = normaal;
+        anglesbeta.reserve(lights.size());
 
-        normaal_copy.normalise();
         for (auto l: lights){
             if (!l->impact){
                 angles.push_back(0);
@@ -90,17 +90,17 @@ namespace LightTools {
             double angle;
             Vector3D r;
             if (l->inf){
-                angle = l->direction.x*-1*normaal_copy.x+l->direction.y*-1*normaal_copy.y+l->direction.z*-1*normaal_copy.z;
+                angle = l->direction.x*-1*normaal.x+l->direction.y*-1*normaal.y+l->direction.z*-1*normaal.z;
 
 
                 angles.push_back(0);
-                r = 2*normaal_copy*angle+l->direction;
+                r = 2*normaal*angle+l->direction;
 
 
             }else{
-                angle = ld_copy.x*normaal_copy.x+ld_copy.y*normaal_copy.y+ld_copy.z*normaal_copy.z;
+                angle = ld_copy.x*normaal.x+ld_copy.y*normaal.y+ld_copy.z*normaal.z;
                 angles.push_back(angle);
-                r = 2*normaal_copy*angle-ld_copy;
+                r = 2*normaal*angle-ld_copy;
 
 
             }

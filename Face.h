@@ -13,7 +13,7 @@ using namespace std;
 class Face {
 
 public:
-    Face(const vector<int> &points);
+    explicit Face(const vector<int> &points);
 
     pair<Vector3D, Vector3D> getUV(const Vector3D& eye_point, const Vector3D& A, const Vector3D& B, const Vector3D& C);
     vector<int> points;
@@ -21,7 +21,7 @@ public:
     double dzdy;
     Color difuus_inf = Color(0, 0, 0);
     Vector3D normaal;
-    bool inversed = false;
+
     map<int, Vector3D> uv_map;
     map<int, Vector3D> normaal_map;
 

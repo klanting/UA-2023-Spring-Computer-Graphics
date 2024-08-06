@@ -253,8 +253,9 @@ namespace tool2D{
                 face.normaal = Vector3D::point(w1, w2, w3);
             }else{
                 face.normaal = -1*Vector3D::point(w1, w2, w3);
-                face.inversed = true;
             }
+
+            face.normaal.normalise();
 
         }
     }
@@ -373,6 +374,7 @@ namespace tool2D{
                     pair<Vector3D, Vector3D> vect = face.getUV(original_point_eye, A, B, C);
                     if (figure->fix_round){
                         face.normaal = vect.second;
+                        face.normaal.normalise();
                     }
 
                     if (!figure->cube_mapping){
@@ -391,7 +393,6 @@ namespace tool2D{
 
                 if (figure->cube_mapping){
                     Vector3D normaal_original = figure->getOriginal(face.normaal, false);
-                    normaal_original.normalise();
                     Color tex = figure->cube_map->getColor(original_point, normaal_original)[0];
                     Color ambient_ref = tex;
                     ambient_ref.multiply(figure->ambient_intensiteit);
