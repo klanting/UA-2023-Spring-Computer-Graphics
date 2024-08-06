@@ -238,7 +238,6 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                     l->shadow = true;
                 }
 
-
                 Lights.push_back(l);
             }
         }
@@ -256,15 +255,27 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
         vector<Figure*> figures;
 
+        /*
+         * Decide ambient color
+         * */
+        Color a_int(0, 0, 0);
+        if (light_support){
+            a_int = LightTools::SumAmbient(Lights);
+        }
+
         for (int i=0; i<figure_amount; i++){
-            bool has_object = configuration["Figure"+to_string(i)]["Object"].as_bool_or_default(false);
-            bool do_cube_mapping = configuration["Figure"+to_string(i)]["cubeMapping"].as_bool_or_default(false);
-            double cube_mapping_size = configuration["Figure"+to_string(i)]["cubeMapSize"].as_double_or_default(1);
 
+            ini::SectionReader sr = ini::SectionReader(light_support, configuration["Figure"+to_string(i)], a_int);
 
+            auto section = configuration["Figure"+to_string(i)];
+
+            bool has_object = sr.getBoolValue("Object");
+            bool do_cube_mapping = sr.getBoolValue("cubeMapping");
+            double cube_mapping_size = section["cubeMapSize"].as_double_or_default(1);
 
             if (has_object){
-                string object_path = configuration["Figure"+to_string(i)]["objectPath"].as_string_or_die();
+
+                string object_path = sr.getStringValue("objectPath");
                 obj::OBJFile ob;
                 ifstream ob_file(object_path);
                 ob_file >> ob;
@@ -274,7 +285,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
                 f->cube_mapping = do_cube_mapping;
                 if (do_cube_mapping){
-                    string mtl_path = configuration["Figure"+to_string(i)]["cubeMapPath"].as_string_or_die();
+                    string mtl_path = sr.getStringValue("cubeMapPath");
                     obj::MTLLibrary mtl;
                     ifstream mtl_file(mtl_path);
                     mtl_file >> mtl;
@@ -286,14 +297,14 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
                 f->reflectie_index = 10;
                 f->ambient_intensiteit = LightTools::SumAmbient(Lights);
-                f->fix_round = configuration["Figure"+to_string(i)]["fixRound"].as_bool_or_default(false);
+                f->fix_round = sr.getBoolValue("fixRound");
+
                 continue;
             }
 
-
-
             bool thick = false;
-            string figure_type_string = configuration["Figure" + to_string(i)]["type"].as_string_or_die();
+
+            string figure_type_string = sr.getStringValue("type");
 
             FigureType figure_type = FigureType(figure_type_string);
 
@@ -302,30 +313,24 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                 figure_type_string = figure_type_string.substr(5, figure_type_string.size() - 5);
             }
 
-
-            Color a_int(0, 0, 0);
-            if (light_support){
-                a_int = LightTools::SumAmbient(Lights);
-            }
-
-
-            ini::DoubleTuple difuus_tup = configuration["Figure"+to_string(i)]["diffuseReflection"].as_double_tuple_or_default({0, 0, 0});
+            ini::DoubleTuple difuus_tup = section["diffuseReflection"].as_double_tuple_or_default({0, 0, 0});
             Color d(difuus_tup[0], difuus_tup[1], difuus_tup[2]);
 
-            ini::DoubleTuple specular_tup = configuration["Figure"+to_string(i)]["specularReflection"].as_double_tuple_or_default({0, 0, 0});
+            ini::DoubleTuple specular_tup = section["specularReflection"].as_double_tuple_or_default({0, 0, 0});
             Color s(specular_tup[0], specular_tup[1], specular_tup[2]);
 
-            double specular_index = configuration["Figure"+to_string(i)]["reflectionCoefficient"].as_double_or_default(1);
+            double specular_index = section["reflectionCoefficient"].as_double_or_default(1);
 
 
-            double rot_x = configuration["Figure"+to_string(i)]["rotateX"].as_double_or_die();
-            double rot_y = configuration["Figure"+to_string(i)]["rotateY"].as_double_or_die();
-            double rot_z = configuration["Figure"+to_string(i)]["rotateZ"].as_double_or_die();
-            double scale = configuration["Figure"+to_string(i)]["scale"].as_double_or_die();
-            ini::DoubleTuple center_tup = configuration["Figure"+to_string(i)]["center"].as_double_tuple_or_die();
+            double rot_x = section["rotateX"].as_double_or_die();
+            double rot_y = section["rotateY"].as_double_or_die();
+            double rot_z = section["rotateZ"].as_double_or_die();
+            double scale = section["scale"].as_double_or_die();
+            ini::DoubleTuple center_tup = section["center"].as_double_tuple_or_die();
             Vector3D center = Vector3D::point(center_tup[0], center_tup[1], center_tup[2]);
 
-            ini::SectionReader sr = ini::SectionReader(light_support, configuration["Figure"+to_string(i)], a_int);
+
+
             Figure* f = FigureFactory::create(figure_type, sr);
             f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
 
@@ -344,9 +349,9 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
                 double fractal_scale;
 
-                int it = configuration["Figure"+to_string(i)]["nrIterations"].as_int_or_die();
+                int it = section["nrIterations"].as_int_or_die();
                 if (figure_type_string != "MengerSponge"){
-                    fractal_scale = configuration["Figure"+to_string(i)]["fractalScale"].as_double_or_die();
+                    fractal_scale = section["fractalScale"].as_double_or_die();
                 }else{
                     fractal_scale = 3;
                 }
@@ -354,28 +359,11 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                 Bodies3D::generateFractal(f, figures, it, fractal_scale, fractal_scale, figure_type.getFractalFree());
             }
 
-
-            bool texture_mapping = configuration["Figure"+to_string(i)]["textureMapping"].as_bool_or_default(false);
-            if (texture_mapping){
-                string path = configuration["Figure"+to_string(i)]["texturePath"].as_string_or_die();
-
-                ini::DoubleTuple P = configuration["Figure"+to_string(i)]["textureP"].as_double_tuple_or_die();
-                ini::DoubleTuple A = configuration["Figure"+to_string(i)]["textureA"].as_double_tuple_or_die();
-                ini::DoubleTuple B = configuration["Figure"+to_string(i)]["textureB"].as_double_tuple_or_die();
-
-                Vector3D Pv = Vector3D::point(P[0], P[1], P[2]);
-                Vector3D Pa = Vector3D::vector(A[0], A[1], A[2]);
-                Vector3D Pb = Vector3D::vector(B[0], B[1], B[2]);
-
-
-                TextureMap* t = new TextureMap(path, Pv, Pa, Pb);
-                f->useTexture = true;
-                f->texture = t;
-            }
+            checkTextureMapping(f, sr);
 
             f->cube_mapping = do_cube_mapping;
             if (do_cube_mapping){
-                string mtl_path = configuration["Figure"+to_string(i)]["cubeMapPath"].as_string_or_die();
+                string mtl_path = section["cubeMapPath"].as_string_or_die();
                 obj::MTLLibrary mtl;
                 ifstream mtl_file(mtl_path);
                 mtl_file >> mtl;
@@ -392,9 +380,9 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
             f->ambient_intensiteit = a_int;
 
             if(thick){
-                double thick_scale = configuration["Figure"+to_string(i)]["radius"].as_double_or_die();
-                int m = configuration["Figure"+to_string(i)]["m"].as_int_or_die();
-                int n = configuration["Figure"+to_string(i)]["n"].as_int_or_die();
+                double thick_scale = section["radius"].as_double_or_die();
+                int m = section["m"].as_int_or_die();
+                int n = section["n"].as_int_or_die();
                 Bodies3D::makeThick(f, figures, thick_scale, m, n);
             }
 

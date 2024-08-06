@@ -25,7 +25,7 @@ namespace ini {
         bool getBoolValue(const std::string& key) const;
 
         Color getColor() const;
-        const ini::Section& section;
+        ini::Section section;
     private:
         bool light_supported;
 
