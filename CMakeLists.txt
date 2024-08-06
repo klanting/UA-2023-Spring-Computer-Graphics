@@ -27,6 +27,8 @@ set(engine_sources
 		src/ObjectType/FigureType.h
 		src/ObjectType/FigureFactory.cpp
 		src/ObjectType/FigureFactory.h
+		src/Configuration/SectionReader.cpp
+		src/Configuration/SectionReader.h
 )
 
 ############################################################

@@ -8,7 +8,7 @@
 
 class Color {
 public:
-    Color(double r, double g, double b);
+    explicit Color(double r, double g, double b);
     void multiply(const Color& c);
     double red;
     double green;

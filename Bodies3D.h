@@ -6,6 +6,10 @@
 #define ENGINE_BODIES3D_H
 #include "Figure.h"
 #include "vector3d.h"
+
+#include "ini_configuration.h"
+
+
 namespace Bodies3D{
     Figure* CreateCubes(const Color &c);
     Figure* CreateIcosahedron(const Color &c);

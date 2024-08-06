@@ -135,6 +135,29 @@ CubeMap* ReadObject(const obj::MTLLibrary& mtl, double max){
 
 }
 
+void checkTextureMapping(Figure* f, const ini::SectionReader& sr){
+    bool texture_mapping = sr.getBoolValue("textureMapping");
+
+    if (texture_mapping){
+        string path = sr.getStringValue("texturePath");
+
+
+        ini::DoubleTuple P = sr.getDoubleTuple("textureP");
+        ini::DoubleTuple A = sr.getDoubleTuple("textureA");
+        ini::DoubleTuple B = sr.getDoubleTuple("textureB");
+
+        Vector3D Pv = Vector3D::point(P[0], P[1], P[2]);
+        Vector3D Pa = Vector3D::vector(A[0], A[1], A[2]);
+        Vector3D Pb = Vector3D::vector(B[0], B[1], B[2]);
+
+
+        TextureMap* t = new TextureMap(path, Pv, Pa, Pb);
+        f->useTexture = true;
+        f->texture = t;
+    }
+
+}
+
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
 
@@ -279,19 +302,10 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                 figure_type_string = figure_type_string.substr(5, figure_type_string.size() - 5);
             }
 
-            ini::DoubleTuple c_tup;
-            if (light_support){
-                c_tup = configuration["Figure"+to_string(i)]["ambientReflection"].as_double_tuple_or_die();
-            }else{
-                c_tup = configuration["Figure"+to_string(i)]["color"].as_double_tuple_or_die();
-            }
 
-            //add ambient light
-            Color c(c_tup[0], c_tup[1], c_tup[2]);
             Color a_int(0, 0, 0);
             if (light_support){
                 a_int = LightTools::SumAmbient(Lights);
-                c.multiply(a_int);
             }
 
 
@@ -311,8 +325,8 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
             ini::DoubleTuple center_tup = configuration["Figure"+to_string(i)]["center"].as_double_tuple_or_die();
             Vector3D center = Vector3D::point(center_tup[0], center_tup[1], center_tup[2]);
 
-
-            Figure* f = FigureFactory::create(figure_type, c, configuration["Figure"+to_string(i)]);
+            ini::SectionReader sr = ini::SectionReader(light_support, configuration["Figure"+to_string(i)], a_int);
+            Figure* f = FigureFactory::create(figure_type, sr);
             f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
 
             if (!figure_type.isFractal()){
@@ -324,24 +338,8 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                 f->spiegeld_color = s;
                 f->reflectie_index = specular_index;
 
-                bool texture_mapping = configuration["Figure"+to_string(i)]["textureMapping"].as_bool_or_default(false);
+                checkTextureMapping(f, sr);
 
-                if (texture_mapping){
-                    string path = configuration["Figure"+to_string(i)]["texturePath"].as_string_or_die();
-
-                    ini::DoubleTuple P = configuration["Figure"+to_string(i)]["textureP"].as_double_tuple_or_die();
-                    ini::DoubleTuple A = configuration["Figure"+to_string(i)]["textureA"].as_double_tuple_or_die();
-                    ini::DoubleTuple B = configuration["Figure"+to_string(i)]["textureB"].as_double_tuple_or_die();
-
-                    Vector3D Pv = Vector3D::point(P[0], P[1], P[2]);
-                    Vector3D Pa = Vector3D::vector(A[0], A[1], A[2]);
-                    Vector3D Pb = Vector3D::vector(B[0], B[1], B[2]);
-
-
-                    TextureMap* t = new TextureMap(path, Pv, Pa, Pb);
-                    f->useTexture = true;
-                    f->texture = t;
-                }
                 f->ambient_intensiteit = a_int;
 
                 double fractal_scale;

@@ -7,14 +7,14 @@
 #include <map>
 #include <functional>
 
-Figure *FigureFactory::create(const FigureType &figure_type, const Color &color, const ini::Section& config) {
+Figure *FigureFactory::create(const FigureType &figure_type, const ini::SectionReader& sr) {
     /**
      * This function follows the factory design pattern to create the right figure,
      * instead of the traditional if statements/ switch statements I chose to make the factory
      * using a map
      * */
 
-    map<std::string, function<Figure*(const Color&, const ini::Section& config)>> function_map;
+    map<std::string, function<Figure*(const ini::SectionReader& sr)>> function_map;
 
     function_map.insert({"Cube", FigureFactory::createCube});
     function_map.insert({"Icosahedron", FigureFactory::createIcosahedron});
@@ -32,59 +32,60 @@ Figure *FigureFactory::create(const FigureType &figure_type, const Color &color,
     function_map.insert({"LineDrawing", FigureFactory::createLineDrawing});
     function_map.insert({"MengerSponge", FigureFactory::createMengerSponge});
 
-    Figure* f = function_map[figure_type.getFractalFree()](color, config);
+    Figure* f = function_map[figure_type.getFractalFree()](sr);
 
 
     return f;
 }
 
-Figure *FigureFactory::createCube(const Color &color, const ini::Section &config) {
-    return Bodies3D::CreateCubes(color);
+Figure *FigureFactory::createCube(const ini::SectionReader& sr) {
+    return Bodies3D::CreateCubes(sr.getColor());
 }
 
-Figure *FigureFactory::createIcosahedron(const Color &color, const ini::Section &config) {
-    return Bodies3D::CreateIcosahedron(color);
+Figure *FigureFactory::createIcosahedron(const ini::SectionReader& sr) {
+    return Bodies3D::CreateIcosahedron(sr.getColor());
 }
 
-Figure *FigureFactory::createOctahedron(const Color &color, const ini::Section &config) {
-    return Bodies3D::CreateOctahedron(color);
+Figure *FigureFactory::createOctahedron(const ini::SectionReader& sr) {
+    return Bodies3D::CreateOctahedron(sr.getColor());
 }
 
-Figure *FigureFactory::createCone(const Color &color, const ini::Section &config) {
-    int n = config["n"].as_int_or_die();
-    double height = config["height"].as_double_or_die();
-    return Bodies3D::CreateCone(color, n, height);
+Figure *FigureFactory::createCone(const ini::SectionReader& sr) {
+    int n = sr.getIntValue("n");
+    double height = sr.getDoubleValue("height");
+    return Bodies3D::CreateCone(sr.getColor(), n, height);
 }
 
-Figure *FigureFactory::createDodecahedron(const Color &color, const ini::Section &config) {
-    return Bodies3D::CreateDodecahedron(color);
+Figure *FigureFactory::createDodecahedron(const ini::SectionReader& sr) {
+    return Bodies3D::CreateDodecahedron(sr.getColor());
 }
 
-Figure *FigureFactory::createCylinder(const Color &color, const ini::Section &config) {
-    int n = config["n"].as_int_or_die();
-    double height = config["height"].as_double_or_die();
-    return Bodies3D::CreateCylinder(color, n, height, true);
+Figure *FigureFactory::createCylinder(const ini::SectionReader& sr) {
+    int n = sr.getIntValue("n");
+    double height = sr.getDoubleValue("height");
+    return Bodies3D::CreateCylinder(sr.getColor(), n, height, true);
 }
 
-Figure *FigureFactory::createSphere(const Color &color, const ini::Section &config) {
-    int n = config["n"].as_int_or_die();
-    return Bodies3D::CreateSphere(color, n);
+Figure *FigureFactory::createSphere(const ini::SectionReader& sr) {
+    int n = sr.getIntValue("n");
+    return Bodies3D::CreateSphere(sr.getColor(), n);
 }
 
-Figure *FigureFactory::createTorus(const Color &color, const ini::Section &config) {
-    int n = config["n"].as_int_or_die();
-    int m = config["m"].as_int_or_die();
-    double r = config["r"].as_double_or_die();
-    double R = config["R"].as_double_or_die();
-    return Bodies3D::CreateTorus(color, n, m, r, R);
+Figure *FigureFactory::createTorus(const ini::SectionReader& sr) {
+    int n = sr.getIntValue("n");
+    int m = sr.getIntValue("m");
+    double r = sr.getDoubleValue("r");
+    double R = sr.getDoubleValue("R");
+    return Bodies3D::CreateTorus(sr.getColor(), n, m, r, R);
 }
 
-Figure *FigureFactory::createTetrahedron(const Color &color, const ini::Section &config) {
-    return Bodies3D::CreateTetrahedron(color);
+Figure *FigureFactory::createTetrahedron(const ini::SectionReader& sr) {
+    return Bodies3D::CreateTetrahedron(sr.getColor());
 }
 
-Figure *FigureFactory::create3DLSystem(const Color &color, const ini::Section &config) {
-    string input_file = config["inputfile"].as_string_or_die();
+Figure *FigureFactory::create3DLSystem(const ini::SectionReader& sr) {
+    string input_file = sr.getStringValue("inputfile");
+
 
     LParser::LSystem3D l_system;
 
@@ -92,41 +93,41 @@ Figure *FigureFactory::create3DLSystem(const Color &color, const ini::Section &c
     input_stream >> l_system;
     input_stream.close();
 
-    L_system3D l(l_system, color);
+    L_system3D l(l_system, sr.getColor());
 
     return l.get_fig();
 }
 
-Figure *FigureFactory::createMobius(const Color &color, const ini::Section &config) {
-    int n = config["n"].as_int_or_die();
-    int m = config["m"].as_int_or_die();
-    return Bodies3D::CreateMobiusband(color, n, m);
+Figure *FigureFactory::createMobius(const ini::SectionReader& sr) {
+    int n = sr.getIntValue("n");
+    int m = sr.getIntValue("m");
+    return Bodies3D::CreateMobiusband(sr.getColor(), n, m);
 }
 
-Figure *FigureFactory::createTorusBelly(const Color &color, const ini::Section &config) {
-    int n = config["n"].as_int_or_die();
-    int m = config["m"].as_int_or_die();
-    return Bodies3D::CreateTorusUmbilic(color, n, m);
+Figure *FigureFactory::createTorusBelly(const ini::SectionReader& sr) {
+    int n = sr.getIntValue("n");
+    int m = sr.getIntValue("m");
+    return Bodies3D::CreateTorusUmbilic(sr.getColor(), n, m);
 }
 
-Figure *FigureFactory::createBuckyBall(const Color &color, const ini::Section &config) {
-    return Bodies3D::CreateBuckyBall(color);
+Figure *FigureFactory::createBuckyBall(const ini::SectionReader& sr) {
+    return Bodies3D::CreateBuckyBall(sr.getColor());
 }
 
-Figure *FigureFactory::createLineDrawing(const Color &color, const ini::Section &config) {
-    int points_amount = config["nrPoints"].as_int_or_die();
+Figure *FigureFactory::createLineDrawing(const ini::SectionReader& sr) {
+    int points_amount = sr.getIntValue("nrPoints");
 
     vector<Vector3D> points;
     vector<vector<int>> lines;
     for (int j=0; j<points_amount; j++){
-        ini::DoubleTuple point_tup = config["point"+to_string(j)].as_double_tuple_or_die();
+        ini::DoubleTuple point_tup = sr.getDoubleTuple("point"+to_string(j));
         Vector3D p = Vector3D::point(point_tup[0], point_tup[1], point_tup[2]);
         points.push_back(p);
     }
 
-    int lines_amount = config["nrLines"].as_int_or_die();
+    int lines_amount = sr.getIntValue("nrLines");
     for (int j=0; j<lines_amount; j++){
-        ini::DoubleTuple point_index_tup = config["line"+to_string(j)].as_double_tuple_or_die();
+        ini::DoubleTuple point_index_tup = sr.getDoubleTuple("line"+to_string(j));
         vector<int> v;
         for (int k=0; k<point_index_tup.size(); k++){
             v.push_back((int) point_index_tup[k]);
@@ -134,9 +135,10 @@ Figure *FigureFactory::createLineDrawing(const Color &color, const ini::Section 
 
         lines.push_back(v);
     }
-    return new Figure(points, lines, color);
+    return new Figure(points, lines, sr.getColor());
 }
 
-Figure *FigureFactory::createMengerSponge(const Color &color, const ini::Section &config) {
-    return Bodies3D::CreateMengerSponge(color);
+Figure *FigureFactory::createMengerSponge(const ini::SectionReader& sr) {
+
+    return Bodies3D::CreateMengerSponge(sr.getColor());
 }
