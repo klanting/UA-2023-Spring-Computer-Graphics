@@ -406,7 +406,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
         }
 
         for (Figure* f: figures){
-            f->eye = eye;
+            f->setEye(eye);
 
             if (clipping){
                 f->EyePerspectifTransform(eye, view_dir);

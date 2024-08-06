@@ -30,7 +30,7 @@ public:
     Color ambient_color = Color(0, 0, 0);
     Color difuus_color = Color(0, 0, 0);
     Color spiegeld_color = Color(0, 0, 0);
-    Vector3D eye;
+
     double reflectie_index = 1;
 
     Color ambient_intensiteit = Color(0, 0, 0);
@@ -59,7 +59,13 @@ public:
     TextureCoord* texture_co;
 
     bool fix_round = false;
+
+    void setEye(const Vector3D& eye_cords);
+    Matrix eye_matrix_point;
+    Matrix eye_matrix_pointless;
+
 private:
+    Vector3D eye;
 
 };
 

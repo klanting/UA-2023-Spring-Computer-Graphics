@@ -117,24 +117,29 @@ void Matrix::inv()
 {
         double temp[NR_DIMS + 1][NR_DIMS + 1];
 
+        int i;
+        int j;
+        int k;
+
         // Make a copy of the original values and set this matrix to the unity matrix.
-        for(int i = 0; i <= NR_DIMS; ++i)
+        for(i = 0; i <= NR_DIMS; ++i)
         {
-                for(int j = 0; j <= NR_DIMS; ++j)
+                for(j = 0; j <= NR_DIMS; ++j)
                 {
                         temp[i][j]   = values[i][j];
                         values[i][j] = i == j ? 1 : 0;
+
                 }
         }
 
         // Use Gauss-Jordan elimination to transform the original matrix into reduced
         // row echelon form.
-        for(int i = 0; i <= NR_DIMS; ++i)
+        for(i = 0; i <= NR_DIMS; ++i)
         {
                 int best_row = i;
 
                 // Find the row with the highest pivot.
-                for(int j = i + 1; j <= NR_DIMS; ++j)
+                for(j = i + 1; j <= NR_DIMS; ++j)
                 {
                         if(std::abs(temp[j][i]) > std::abs(temp[best_row][i]))
                         {
@@ -147,22 +152,23 @@ void Matrix::inv()
                 // Swap the current row and the row with the highest pivot such that the row
                 // with the highest pivot becomes the current row.  Divide the row afterwards b
                 // y the value of the pivot such that the first non-zero coefficient becomes 1.
-                for(int j = 0; j <= NR_DIMS; ++j)
+                for(j = 0; j <= NR_DIMS; ++j)
                 {
                         std::swap(temp[best_row][j],   temp[i][j]);
                         std::swap(values[best_row][j], values[i][j]);
 
                         temp[i][j]   /= pivot;
                         values[i][j] /= pivot;
+
                 }
 
                 // Subtract the current row from the remaining rows such that the first
                 // non-zero element of the remaining rows becomes 0.
-                for(int j = i + 1; j <= NR_DIMS; ++j)
+                for(j = i + 1; j <= NR_DIMS; ++j)
                 {
                         const double factor = temp[j][i];
 
-                        for(int k = 0; k <= NR_DIMS; ++k)
+                        for(k = 0; k <= NR_DIMS; ++k)
                         {
                                 temp[j][k]   -= factor * temp[i][k];
                                 values[j][k] -= factor * values[i][k];
@@ -171,15 +177,15 @@ void Matrix::inv()
         }
 
         // Use Gauss-Jordan elimination to transform the matrix into a unity matrix.
-        for(int i = NR_DIMS; i >= 0; --i)
+        for(i = NR_DIMS; i >= 0; --i)
         {
                 // Subtract the current row from the preceding rows in order to zero
                 // all elements on the row except for the first one.
-                for(int j = 0; j < i; ++j)
+                for(j = 0; j < i; ++j)
                 {
                         const double factor = temp[j][i];
 
-                        for(int k = 0; k <= NR_DIMS; ++k)
+                        for(k = 0; k <= NR_DIMS; ++k)
                         {
                                 temp[j][k]   -= factor * temp[i][k];
                                 values[j][k] -= factor * values[i][k];

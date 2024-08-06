@@ -17,18 +17,6 @@ pair<Vector3D, Vector3D> Face::getUV(const Vector3D &eye_point, const Vector3D& 
 
     Matrix UVmatrix;
 
-    /*
-    UVmatrix(1, 1) = a.x;
-    UVmatrix(1, 2) = a.y;
-    UVmatrix(1, 3) = a.z;
-    UVmatrix(2, 1) = b.x;
-    UVmatrix(2, 2) = b.y;
-    UVmatrix(2, 3) = b.z;
-    UVmatrix(3, 1) = c.x;
-    UVmatrix(3, 2) = c.y;
-    UVmatrix(3, 3) = c.z;
-    UVmatrix.inv();*/
-
     UVmatrix(1, 1) = a.x;
     UVmatrix(1, 2) = a.y;
     UVmatrix(2, 1) = b.x;
