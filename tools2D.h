@@ -9,6 +9,7 @@
 #include "Face.h"
 #include "vector3d.h"
 #include "Figure.h"
+#include "BufferStorage.h"
 
 
 using namespace std;
@@ -34,6 +35,7 @@ namespace tool2D{
 
     void doFigureProjection(Figure* figure, double d, const pair<double, double>& deviation);
     void determineFaceData(Figure* figure, double d);
+    void faceActions(Figure* figure, Z_buffer& z_buf, BufferStorage& buf_store);
 
 
 }

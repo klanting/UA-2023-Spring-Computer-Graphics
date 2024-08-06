@@ -278,8 +278,9 @@ void img::EasyImage::draw_line_zbuf(unsigned int x0, unsigned int y0, double z0,
 
     if (x0 == x1 && y0 == y1){
         double dif_zi = std::min(1.0/z0, 1.0/z1);
-        if (dif_zi < z_buf[x0][y0]){
-            z_buf[x0][y0] = dif_zi;
+
+        if (dif_zi < z_buf.get(x0, y0)){
+            z_buf.set(x0, y0, dif_zi);
             (*this)(x0, y0) = color;
         }
     }else if (x0 == x1)
@@ -305,8 +306,8 @@ void img::EasyImage::draw_line_zbuf(unsigned int x0, unsigned int y0, double z0,
 
             double p = (i-std::min(y0, y1))/a;
             double dif_zi = p/zt1+(1-p)/zt0;
-            if (dif_zi < z_buf[x0][i]){
-                z_buf[x0][i] = dif_zi;
+            if (dif_zi < z_buf.get(x0,i)){
+                z_buf.set(x0, y0, dif_zi);
                 (*this)(x0, i) = color;
             }
 
@@ -337,8 +338,8 @@ void img::EasyImage::draw_line_zbuf(unsigned int x0, unsigned int y0, double z0,
             double dif_zi = p/zt1+(1-p)/zt0;
 
 
-            if (dif_zi < z_buf[i][y0]){
-                z_buf[i][y0] = dif_zi;
+            if (dif_zi < z_buf.get(i,y0)){
+                z_buf.set(i,y0, dif_zi);
                 (*this)(i, y0) = color;
             }
 
@@ -364,9 +365,12 @@ void img::EasyImage::draw_line_zbuf(unsigned int x0, unsigned int y0, double z0,
                 double p = i/a;
                 double dif_zi = p/z1+(1-p)/z0;
 
-                if (dif_zi < z_buf[x0 + i][(unsigned int) round(y0 + m * i)]){
-                    z_buf[x0 + i][(unsigned int) round(y0 + m * i)] = dif_zi;
-                    (*this)(x0 + i, (unsigned int) round(y0 + m * i)) = color;
+                auto x_value = x0 + i;
+                auto y_value = (unsigned int) round(y0 + m * i);
+
+                if (dif_zi < z_buf.get(x_value, y_value)){
+                    z_buf.set(x_value, y_value, dif_zi);
+                    (*this)(x_value, y_value) = color;
                 }
 
             }
@@ -382,10 +386,12 @@ void img::EasyImage::draw_line_zbuf(unsigned int x0, unsigned int y0, double z0,
                 double dif_zi = p/z1+(1-p)/z0;
 
 
+                auto x_value = (unsigned int) round(x0 + (i / m));
+                auto y_value = y0 + i;
 
-                if (dif_zi < z_buf[(unsigned int) round(x0 + (i / m))][y0 + i]){
-                    z_buf[(unsigned int) round(x0 + (i / m))][y0 + i] = dif_zi;
-                    (*this)((unsigned int) round(x0 + (i / m)), y0 + i) = color;
+                if (dif_zi < z_buf.get(x_value, y_value)){
+                    z_buf.set(x_value, y_value, dif_zi);
+                    (*this)(x_value, y_value) = color;
                 }
 
             }
@@ -401,9 +407,12 @@ void img::EasyImage::draw_line_zbuf(unsigned int x0, unsigned int y0, double z0,
                 double p = i/a;
                 double dif_zi = p/z1+(1-p)/z0;
 
-                if (dif_zi < z_buf[(unsigned int) round(x0 - (i / m))][y0 - i]){
-                    z_buf[(unsigned int) round(x0 - (i / m))][y0 - i] = dif_zi;
-                    (*this)((unsigned int) round(x0 - (i / m)), y0 - i) = color;
+                auto x_value = (unsigned int) round(x0 - (i / m));
+                auto y_value = y0 - i;
+
+                if (dif_zi < z_buf.get(x_value, y_value)){
+                    z_buf.set(x_value, y_value, dif_zi);
+                    (*this)(x_value, y_value) = color;
                 }
             }
         }

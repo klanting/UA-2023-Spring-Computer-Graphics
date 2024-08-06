@@ -256,8 +256,67 @@ namespace tool2D{
                 face.inversed = true;
             }
 
-            //face.normaal.normalise();
+        }
+    }
 
+    void faceActions(Figure* figure, Z_buffer& z_buf, BufferStorage& buf_store){
+        int face_counter = 0;
+        for (auto face: figure->faces){
+            Vector3D A = figure->points[face.points[0]];
+            Vector3D B = figure->points[face.points[1]];
+            Vector3D C = figure->points[face.points[2]];
+
+            vector<Vector3D> temp_fases = {A, B, C};
+
+            double xG = (A.x+B.x+C.x)/3;
+            double yG = (A.y+B.y+C.y)/3;
+            double diff_zG = 1/(3*A.z)+1/(3*B.z)+1/(3*C.z);
+
+            double dzdx = face.dzdx;
+            double dzdy = face.dzdy;
+
+            double y_min = min(A.y, B.y);
+            y_min = min(C.y, y_min);
+
+            double y_max = max(A.y, B.y);
+            y_max = max(C.y, y_max);
+
+            for (int y_i= lround(y_min+0.5); y_i <= lround(y_max-0.5); y_i++){
+                vector<double> valid_x_i;
+                valid_x_i.reserve(2);
+
+                for (int i = 0; i<3; i++){
+                    auto t1 = temp_fases[i%3];
+                    auto t2 = temp_fases[(i+1)%3];
+
+                    double x_1 = t1.x;
+                    double x_2 = t2.x;
+                    double y_1 = t1.y;
+                    double y_2 = t2.y;
+
+                    if ((y_i-y_1)*(y_i-y_2) <= 0 && y_1 != y_2){
+                        double x_i = x_2 + (x_1-x_2)*(y_i-y_2)/(y_1-y_2);
+                        valid_x_i.push_back(x_i);
+                    }
+                }
+                if (valid_x_i.empty()){
+                    continue;
+                }
+
+                int x_l = lround(min(valid_x_i[0], valid_x_i[1]) + 0.5);
+                int x_r = lround(max(valid_x_i[0], valid_x_i[1]) - 0.5);
+                for (int x_i = x_l; x_i<=x_r; x_i++){
+                    double diff_zi = diff_zG+(x_i-xG)*dzdx+(y_i-yG)*dzdy;
+
+                    if (diff_zi < z_buf.get(x_i, y_i)){
+                        buf_store[x_i][y_i] = make_pair(figure, face_counter);
+                        z_buf.set(x_i, y_i, diff_zi);
+                    }
+
+                }
+            }
+
+            face_counter += 1;
         }
     }
 
@@ -273,60 +332,10 @@ namespace tool2D{
             figure->DifuusLichtInf(lights);
 
             doFigureProjection(figure, d, deviation);
+
+            faceActions(figure, z_buf, buf_store);
         }
 
-
-        for (auto figure: figures){
-            int face_counter = 0;
-            for (auto face: figure->faces){
-                Vector3D A = figure->points[face.points[0]];
-                Vector3D B = figure->points[face.points[1]];
-                Vector3D C = figure->points[face.points[2]];
-                vector<Vector3D> temp_fases = {A, B, C};
-                double xG = (A.x+B.x+C.x)/3;
-                double yG = (A.y+B.y+C.y)/3;
-                double diff_zG = 1/(3*A.z)+1/(3*B.z)+1/(3*C.z);
-
-                double dzdx = face.dzdx;
-                double dzdy = face.dzdy;
-
-                double y_min = min(A.y, B.y);
-                y_min = min(C.y, y_min);
-
-                double y_max = max(A.y, B.y);
-                y_max = max(C.y, y_max);
-                for (int y_i= lround(y_min+0.5); y_i <= lround(y_max-0.5); y_i++){
-                    vector<double> valid_x_i;
-                    for (int i = 0; i<3; i++){
-                        double x_1 = temp_fases[i%3].x;
-                        double x_2 = temp_fases[(i+1)%3].x;
-                        double y_1 = temp_fases[i%3].y;
-                        double y_2 = temp_fases[(i+1)%3].y;
-                        if ((y_i-y_1)*(y_i-y_2) <= 0 && y_1 != y_2){
-                            double x_i = x_2 + (x_1-x_2)*(y_i-y_2)/(y_1-y_2);
-                            valid_x_i.push_back(x_i);
-                        }
-                    }
-                    if (valid_x_i.size() == 0){
-                        continue;
-                    }
-
-                    int x_l = lround(min(valid_x_i[0], valid_x_i[1]) + 0.5);
-                    int x_r = lround(max(valid_x_i[0], valid_x_i[1]) - 0.5);
-                    for (int x_i = x_l; x_i<=x_r; x_i++){
-                        double diff_zi = diff_zG+(x_i-xG)*dzdx+(y_i-yG)*dzdy;
-
-                        if (diff_zi < z_buf[x_i][y_i]){
-                            buf_store[x_i][y_i] = make_pair(figure, face_counter);
-                            z_buf[x_i][y_i] = diff_zi;
-                        }
-
-                    }
-                }
-
-                face_counter += 1;
-            }
-        }
 
         for (int x_i = 0; x_i<image.get_width(); x_i++){
             for (int y_i = 0; y_i<image.get_height(); y_i++){
@@ -338,7 +347,10 @@ namespace tool2D{
 
                 Figure* figure = data_pair.first;
                 Face face = figure->faces[data_pair.second];
-                Vector3D original_point_eye = Vector3D::point(-(x_i-deviation.first)*(1.0/z_buf[x_i][y_i])/d, -(y_i-deviation.second)*(1.0/z_buf[x_i][y_i])/d, 1.0/z_buf[x_i][y_i]);
+
+
+
+                Vector3D original_point_eye = Vector3D::point(-(x_i-deviation.first)*(1.0/z_buf.get(x_i, y_i))/d, -(y_i-deviation.second)*(1.0/z_buf.get(x_i, y_i))/d, 1.0/z_buf.get(x_i, y_i));
                 Vector3D original_point = figure->getOriginal(original_point_eye, true);
 
                 if (figure->useTexture){
@@ -373,7 +385,6 @@ namespace tool2D{
                             figure->difuus_color = figure->texture_co->getDifuus(vect.first.x, vect.first.y);
                         }
 
-                        //figure->spiegeld_color = Color(1, 1, 1);
                     }
 
                 }
