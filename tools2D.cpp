@@ -233,7 +233,7 @@ namespace tool2D{
         }
     }
 
-    void determineFaceData(Figure* figure, double d){
+    void determineFaceData(Figure* figure, double d, bool determine_normal){
         for (auto& face: figure->faces){
             Vector3D A = figure->points[face.points[0]];
             Vector3D B = figure->points[face.points[1]];
@@ -249,13 +249,17 @@ namespace tool2D{
             double k = w1*A.x+w2*A.y+w3*A.z;
             face.dzdx = w1/(-d*k);
             face.dzdy = w2/(-d*k);
-            if (k <= 0){
-                face.normaal = Vector3D::point(w1, w2, w3);
-            }else{
-                face.normaal = -1*Vector3D::point(w1, w2, w3);
+
+            if (determine_normal){
+                if (k <= 0){
+                    face.normaal = Vector3D::point(w1, w2, w3);
+                }else{
+                    face.normaal = -1*Vector3D::point(w1, w2, w3);
+                }
+
+                face.normaal.normalise();
             }
 
-            face.normaal.normalise();
 
         }
     }
@@ -328,7 +332,7 @@ namespace tool2D{
         img::Color easy_bc(lround(bc.red*255), lround(bc.green*255), lround(bc.blue*255));
         image.clear(easy_bc);
         for (auto& figure: figures){
-            determineFaceData(figure, d);
+            determineFaceData(figure, d, true);
 
             figure->DifuusLichtInf(lights);
 

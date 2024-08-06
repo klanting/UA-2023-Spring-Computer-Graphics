@@ -102,38 +102,11 @@ void Light::MakeShadowBuffer(const vector<Figure *> &figures) {
 
 
     for (auto& figure: figures){
-        for (auto& face: figure->faces){
-            Vector3D A = figure->points[face.points[0]];
-            Vector3D B = figure->points[face.points[1]];
-            Vector3D C = figure->points[face.points[2]];
-            vector<Vector3D> temp_fases = {A, B, C};
-
-            Vector3D u = B-A;
-            Vector3D v = C-A;
-
-            double w1 = u.y*v.z-u.z*v.y;
-            double w2 = u.z*v.x-u.x*v.z;
-            double w3 = u.x*v.y-u.y*v.x;
-            double k = w1*A.x+w2*A.y+w3*A.z;
-            face.dzdx = w1/(-d*k);
-            face.dzdy = w2/(-d*k);
-
-        }
-
+        tool2D::determineFaceData(figure, d, false);
+        tool2D::doFigureProjection(figure, d, deviation);
     }
 
 
-    for (auto figure: figures){
-        figure->DoProjection(d);
-
-
-        for (auto &p: figure->points){
-            p.x += dx;
-            p.y += dy;
-
-
-        }
-    }
 
     for (auto figure: figures){
         int face_counter = 0;

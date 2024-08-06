@@ -34,7 +34,7 @@ namespace tool2D{
     img::EasyImage draw2DTriangle(const vector<Figure*> &figures, const Color &bc, double d, pair<double, double> deviation, pair<int, int> image_size, const vector<Light*>& lights);
 
     void doFigureProjection(Figure* figure, double d, const pair<double, double>& deviation);
-    void determineFaceData(Figure* figure, double d);
+    void determineFaceData(Figure* figure, double d, bool determine_normal);
     void faceActions(Figure* figure, Z_buffer& z_buf, BufferStorage& buf_store);
 
 
