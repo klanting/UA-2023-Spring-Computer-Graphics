@@ -68,7 +68,9 @@ void Light::shadow_transform(const vector<Figure*>& figures) {
     for (auto f: figures){
         f->EyePerspectifTransform(location);
         f->DoProjection(1);
-        f->setEye(location);
+
+        EyePerspective* eye_position = new EyePerspective{location};
+        f->setEye(eye_position);
     }
 
     MakeShadowBuffer(figures);

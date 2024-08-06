@@ -218,55 +218,63 @@ namespace tool2D{
         }
     }
 
-    img::EasyImage draw2DTriangle(const vector<Figure*> &figures, const Color &bc, double d, pair<double, double> deviation, pair<int, int> image_size, const vector<Light*>& lights, const Vector3D& eye){
+    void doFigureProjection(Figure* figure, double d, const pair<double, double>& deviation){
+        /*
+         * Do projection
+         * */
+        figure->DoProjection(d);
+
+
+        for (auto &p: figure->points){
+            p.x += deviation.first;
+            p.y += deviation.second;
+
+
+        }
+    }
+
+    void determineFaceData(Figure* figure, double d){
+        for (auto& face: figure->faces){
+            Vector3D A = figure->points[face.points[0]];
+            Vector3D B = figure->points[face.points[1]];
+            Vector3D C = figure->points[face.points[2]];
+            vector<Vector3D> temp_fases = {A, B, C};
+
+            Vector3D u = B-A;
+            Vector3D v = C-A;
+
+            double w1 = u.y*v.z-u.z*v.y;
+            double w2 = u.z*v.x-u.x*v.z;
+            double w3 = u.x*v.y-u.y*v.x;
+            double k = w1*A.x+w2*A.y+w3*A.z;
+            face.dzdx = w1/(-d*k);
+            face.dzdy = w2/(-d*k);
+            if (k <= 0){
+                face.normaal = Vector3D::point(w1, w2, w3);
+            }else{
+                face.normaal = -1*Vector3D::point(w1, w2, w3);
+                face.inversed = true;
+            }
+
+            //face.normaal.normalise();
+
+        }
+    }
+
+    img::EasyImage draw2DTriangle(const vector<Figure*> &figures, const Color &bc, double d, pair<double, double> deviation, pair<int, int> image_size, const vector<Light*>& lights){
         img::EasyImage image(image_size.first, image_size.second);
         Z_buffer z_buf((unsigned int) image_size.first, (unsigned int) image_size.second);
         BufferStorage buf_store((unsigned int) image_size.first, (unsigned int) image_size.second);
         img::Color easy_bc(lround(bc.red*255), lround(bc.green*255), lround(bc.blue*255));
         image.clear(easy_bc);
         for (auto& figure: figures){
-            for (auto& face: figure->faces){
-                Vector3D A = figure->points[face.points[0]];
-                Vector3D B = figure->points[face.points[1]];
-                Vector3D C = figure->points[face.points[2]];
-                vector<Vector3D> temp_fases = {A, B, C};
-
-                Vector3D u = B-A;
-                Vector3D v = C-A;
-
-                double w1 = u.y*v.z-u.z*v.y;
-                double w2 = u.z*v.x-u.x*v.z;
-                double w3 = u.x*v.y-u.y*v.x;
-                double k = w1*A.x+w2*A.y+w3*A.z;
-                face.dzdx = w1/(-d*k);
-                face.dzdy = w2/(-d*k);
-                if (k <= 0){
-                    face.normaal = Vector3D::point(w1, w2, w3);
-                }else{
-                    face.normaal = -1*Vector3D::point(w1, w2, w3);
-                    face.inversed = true;
-                }
-
-                //face.normaal.normalise();
-
-            }
+            determineFaceData(figure, d);
 
             figure->DifuusLichtInf(lights);
+
+            doFigureProjection(figure, d, deviation);
         }
 
-
-
-        for (auto figure: figures){
-            figure->DoProjection(d);
-
-
-            for (auto &p: figure->points){
-                p.x += deviation.first;
-                p.y += deviation.second;
-
-
-            }
-        }
 
         for (auto figure: figures){
             int face_counter = 0;
@@ -328,14 +336,10 @@ namespace tool2D{
                     continue;
                 }
 
-                //image(669, 354).green = 255;
-                //image(687, 491).green = 255;
-
                 Figure* figure = data_pair.first;
                 Face face = figure->faces[data_pair.second];
                 Vector3D original_point_eye = Vector3D::point(-(x_i-deviation.first)*(1.0/z_buf[x_i][y_i])/d, -(y_i-deviation.second)*(1.0/z_buf[x_i][y_i])/d, 1.0/z_buf[x_i][y_i]);
                 Vector3D original_point = figure->getOriginal(original_point_eye, true);
-                Vector3D normaal_original = figure->getOriginal(face.normaal, false);
 
                 if (figure->useTexture){
                     Color tex = figure->texture->getColor(original_point);
@@ -374,10 +378,10 @@ namespace tool2D{
 
                 }
 
-                Vector3D normaal_original2 = figure->getOriginal(face.normaal, false);
                 if (figure->cube_mapping){
-                    normaal_original2.normalise();
-                    Color tex = figure->cube_map->getColor(original_point, normaal_original2)[0];
+                    Vector3D normaal_original = figure->getOriginal(face.normaal, false);
+                    normaal_original.normalise();
+                    Color tex = figure->cube_map->getColor(original_point, normaal_original)[0];
                     Color ambient_ref = tex;
                     ambient_ref.multiply(figure->ambient_intensiteit);
                     figure->ambient_color = ambient_ref;
@@ -396,7 +400,7 @@ namespace tool2D{
 
                 Color diffusSpec_color = LightTools::DifuusSpecularLicht(lights, face.normaal,
                                                                          original_point_eye,
-                                                                         figure->difuus_color, figure->spiegeld_color, figure->reflectie_index, face.inversed);
+                                                                         figure->difuus_color, figure->spiegeld_color, figure->reflectie_index);
 
                 double red = figure->ambient_color.red + face.difuus_inf.red + diffusSpec_color.red;
                 double green = figure->ambient_color.green + face.difuus_inf.green + diffusSpec_color.green;

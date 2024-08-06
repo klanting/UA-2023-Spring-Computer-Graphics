@@ -11,7 +11,7 @@ namespace LightTools {
     Color SumAmbient(const vector<Light*>& lights);
     Color SumDifuusInf(const vector<Light*>& lights, const vector<double>& angles);
     Color SumDifuus(const vector<Light*>& lights, const vector<double> &angles);
-    Color DifuusSpecularLicht(const vector<Light*>& lights, const Vector3D& normaal, const Vector3D& point, const Color& difuus_ref, const Color& specular_ref, double reflectie_index, bool normaal_inversed);
+    Color DifuusSpecularLicht(const vector<Light*>& lights, const Vector3D& normaal, const Vector3D& point, const Color& difuus_ref, const Color& specular_ref, double reflectie_index);
     Color SumSpecular(const vector<Light*>& lights, const vector<double> &angles, double reflectie_index);
 };
 

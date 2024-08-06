@@ -70,7 +70,7 @@ namespace LightTools {
         return Color(red, green, blue);
     }
 
-    Color DifuusSpecularLicht(const vector<Light*>& lights, const Vector3D& normaal, const Vector3D& point, const Color& difuus_ref, const Color& specular_ref, double reflectie_index, bool normaal_inversed){
+    Color DifuusSpecularLicht(const vector<Light*>& lights, const Vector3D& normaal, const Vector3D& point, const Color& difuus_ref, const Color& specular_ref, double reflectie_index){
         vector<double> angles;
         vector<double> anglesbeta;
         Vector3D normaal_copy = normaal;

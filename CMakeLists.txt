@@ -29,6 +29,8 @@ set(engine_sources
 		src/ObjectType/FigureFactory.h
 		src/Configuration/SectionReader.cpp
 		src/Configuration/SectionReader.h
+		src/Perspective/EyePerspective.cpp
+		src/Perspective/EyePerspective.h
 )
 
 ############################################################

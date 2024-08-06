@@ -17,6 +17,7 @@
 #include "TextureMap.h"
 #include "CubeMap.h"
 #include "TextureCoord.h"
+#include "src/Perspective/EyePerspective.h"
 using namespace std;
 
 class Figure {
@@ -24,7 +25,7 @@ public:
     Figure(const vector<Vector3D> &points, const vector<vector<int>> &lines, const Color &c);
     Figure(const vector<Vector3D> &points, const vector<vector<int>> &lines, const vector<vector<Vector3D>> &uv, const vector<vector<Vector3D>> &v_normaal, const Color &c);
 
-public:
+
     vector<Vector3D> points;
     vector<Face> faces;
     Color ambient_color = Color(0, 0, 0);
@@ -36,7 +37,7 @@ public:
     Color ambient_intensiteit = Color(0, 0, 0);
 
     void EyePerspectifTransform(const Vector3D &eye_cords);
-    void EyeTransformFace(const Vector3D &eye_cords);
+    void EyeTransformFace();
     void EyeUnPerspectifTransform(const Vector3D &eye_cords);
     void EyePerspectifTransform(const Vector3D &eye_cords, const Vector3D& view_dir);
     void DoProjection(double d);
@@ -60,12 +61,10 @@ public:
 
     bool fix_round = false;
 
-    void setEye(const Vector3D& eye_cords);
-    Matrix eye_matrix_point;
-    Matrix eye_matrix_pointless;
+    void setEye(EyePerspective* eye_perspective);
 
 private:
-    Vector3D eye;
+    EyePerspective* eye_perspective;
 
 };
 

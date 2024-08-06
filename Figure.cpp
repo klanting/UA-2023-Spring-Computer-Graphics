@@ -318,71 +318,34 @@ void Figure::EyeUnPerspectifTransform(const Vector3D &eye_cords) {
 }
 
 Vector3D Figure::getOriginal(const Vector3D &point, bool has_point) {
-    double r = sqrt(pow(eye.x, 2)+pow(eye.y, 2)+pow(eye.z, 2));
-    double temp = eye.z/r;
-    if (r == 0){
+    if (eye_perspective->getR() == 0){
         return Vector3D::point(0, 0, 0);
     }
 
-    Matrix using_matrix;
-
     if (has_point){
-        using_matrix = eye_matrix_point;
+
+        return point*eye_perspective->getEyeMatrixPointInverse();
     }else{
-        using_matrix = eye_matrix_pointless;
+        return point*eye_perspective->getEyeMatrixPointlessInverse();
+
+
     }
 
-    return point*using_matrix;
 }
 
-void Figure::EyeTransformFace(const Vector3D &eye_cords) {
-    double r = sqrt(pow(eye.x, 2)+pow(eye.y, 2)+pow(eye.z, 2));
-    double temp = eye.z/r;
-
-    double theta = atan2(eye.y, eye.x);
-    double phi = acos(temp);
-
-    Matrix eyeMatrix;
-    eyeMatrix(1, 1) = -sin(theta);
-    eyeMatrix(1, 2) = -cos(theta) * cos(phi);
-    eyeMatrix(1, 3) = cos(theta) * sin(phi);
-    eyeMatrix(2, 1) = cos(theta);
-    eyeMatrix(2, 2) = -sin(theta) * cos(phi);
-    eyeMatrix(2, 3) = sin(theta) * sin(phi);
-    eyeMatrix(3, 2) = sin(phi);
-    eyeMatrix(3, 3) = cos(phi);
+void Figure::EyeTransformFace() {
 
     for(auto& face: faces){
         for(auto& v: face.normaal_map){
-            v.second = v.second*eyeMatrix;
+            v.second = v.second*eye_perspective->getEyeMatrixPoint();
         }
 
     }
 }
 
-void Figure::setEye(const Vector3D &eye_cords) {
-    Figure::eye = eye_cords;
+void Figure::setEye(EyePerspective* eye_perspective) {
 
-    double r = sqrt(pow(eye.x, 2)+pow(eye.y, 2)+pow(eye.z, 2));
-    double temp = eye.z/r;
-
-    double theta = atan2(eye.y, eye.x);
-    double phi = acos(temp);
-    Matrix eye_m;
-    eye_matrix_point(1,1) = -sin(theta);
-    eye_matrix_point(1,2) = -cos(theta)*cos(phi);
-    eye_matrix_point(1,3) = cos(theta)*sin(phi);
-    eye_matrix_point(2, 1) = cos(theta);
-    eye_matrix_point(2, 2) = -sin(theta)*cos(phi);
-    eye_matrix_point(2, 3) = sin(theta)*sin(phi);
-    eye_matrix_point(3,2) = sin(phi);
-    eye_matrix_point(3,3) = cos(phi);
-
-    eye_matrix_pointless = eye_matrix_point;
-    eye_matrix_point(4,3) = -r;
-
-    eye_matrix_point.inv();
-    eye_matrix_pointless.inv();
+    Figure::eye_perspective = eye_perspective;
 
 }
 

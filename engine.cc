@@ -31,6 +31,7 @@
 #include "TextureCoord.h"
 #include "src/ObjectType/FigureType.h"
 #include "src/ObjectType/FigureFactory.h"
+#include "src/Perspective/EyePerspective.h"
 using namespace std;
 using Lines2D = list<Line2D*>;
 
@@ -405,8 +406,10 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
             }
         }
 
+        EyePerspective* eye_position = new EyePerspective{eye};
         for (Figure* f: figures){
-            f->setEye(eye);
+
+            f->setEye(eye_position);
 
             if (clipping){
                 f->EyePerspectifTransform(eye, view_dir);
@@ -432,7 +435,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                 f->EyePerspectifTransform(eye);
             }
 
-            f->EyeTransformFace(eye);
+            f->EyeTransformFace();
             f->DoProjection(1);
         }
 
@@ -458,7 +461,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                 figure->UndoProjection(1);
             }
             img::EasyImage image;
-            image = tool2D::draw2DTriangle(figures, bc, d, deviation, image_size, Lights, eye);
+            image = tool2D::draw2DTriangle(figures, bc, d, deviation, image_size, Lights);
 
             for (auto f: figures){
                 delete f;
