@@ -5,7 +5,7 @@
 #ifndef ENGINE_FIGURETYPE_H
 #define ENGINE_FIGURETYPE_H
 #include <string>
-
+#include <vector>
 
 class FigureType {
     /*
@@ -15,8 +15,9 @@ public:
     explicit FigureType(std::string &figure_type);
 
     bool isFractal() const;
+    bool isThick();
 
-    std::string getFractalFree() const;
+    std::string getBaseType() const;
 
 private:
     std::string figure_type;

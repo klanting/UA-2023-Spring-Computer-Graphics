@@ -31,11 +31,11 @@ namespace tool2D{
     pair<double, double> get_deviation(const pair<double, double> &image_size, const vector<double> &min_max, double d);
     void use_add_factor(const Lines2D &lines, double dx, double dy);
     tuple<double, pair<double, double>, pair<double, double>> get_scale_factor_all(const vector<Figure*> &figures, int size, double margin);
-    img::EasyImage draw2DTriangle(const vector<Figure*> &figures, const Color &bc, double d, pair<double, double> deviation, pair<int, int> image_size, const vector<Light*>& lights);
+    img::EasyImage draw2DTriangle(const vector<Figure*> &figures, const Color &bc, double d, pair<double, double> deviation, const pair<unsigned int, unsigned int>& image_size, const vector<Light*>& lights);
 
     void doFigureProjection(Figure* figure, double d, const pair<double, double>& deviation);
     void determineFaceData(Figure* figure, double d, bool determine_normal);
-    void faceActions(Figure* figure, Z_buffer& z_buf, BufferStorage& buf_store);
+    void faceZBufferingFilling(Figure* figure, Z_buffer& z_buf, BufferStorage& buf_store);
 
 
 }

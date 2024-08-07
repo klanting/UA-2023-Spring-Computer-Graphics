@@ -20,6 +20,15 @@
 #include "../Perspective/EyePerspective.h"
 using namespace std;
 
+
+struct Reflections{
+    Color ambient_intensity = Color(0, 0, 0);
+    Color diffuse_color = Color(0, 0, 0);
+    Color spectral_color = Color(0, 0, 0);
+    double reflection_index = 1;
+
+};
+
 class Figure {
 public:
     Figure(const vector<Vector3D> &points, const vector<vector<int>> &lines, const Color &c);
@@ -28,13 +37,10 @@ public:
 
     vector<Vector3D> points;
     vector<Face> faces;
+
+    Reflections reflections;
+
     Color ambient_color = Color(0, 0, 0);
-    Color difuus_color = Color(0, 0, 0);
-    Color spiegeld_color = Color(0, 0, 0);
-
-    double reflectie_index = 1;
-
-    Color ambient_intensiteit = Color(0, 0, 0);
 
     void EyePerspectifTransform(const Vector3D &eye_cords);
     void EyeTransformFace();

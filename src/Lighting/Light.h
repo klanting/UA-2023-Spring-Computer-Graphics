@@ -8,14 +8,16 @@
 #include "../Figure/vector3d.h"
 #include "ShadowMask.h"
 
+struct LightColors{
+    Color ambient = Color(0, 0, 0);
+    Color diffuse = Color(0, 0, 0);
+    Color specular = Color(0, 0, 0);
+};
+
 class Figure;
 class Light {
 public:
     Light();
-    Color ambient = Color(0, 0, 0);
-    Color difuus = Color(0, 0, 0);
-    Color spiegelend = Color(0, 0, 0);
-    Color difuus_infinity = Color(0, 0, 0);
     Vector3D direction = Vector3D::point(0, 0, 0);
     Vector3D location = Vector3D::point(0, 0, 0);
     Vector3D original_location = Vector3D::point(0, 0, 0);
@@ -35,7 +37,16 @@ public:
     void EyePerspectifTransform(const Vector3D &eye_cords, const Vector3D& view_dir);
     void shadow_transform(const vector<Figure*>& figures);
     bool same(const Vector3D& normal_point);
+
+    Color getAmbient() const;
+    Color getDiffuse() const;
+    Color getSpectral() const;
+
+    void setLightColors(const LightColors &lightColors);
+
 private:
+    LightColors light_colors;
+
     void MakeShadowBuffer(const vector<Figure*>& figures);
 
 };

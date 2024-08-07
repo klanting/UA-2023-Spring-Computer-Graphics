@@ -221,3 +221,20 @@ bool Light::same(const Vector3D &normal_point) {
 
 }
 
+
+void Light::setLightColors(const LightColors &lightColors) {
+    light_colors = lightColors;
+}
+
+Color Light::getAmbient() const {
+    return light_colors.ambient;
+}
+
+Color Light::getDiffuse() const {
+    return light_colors.diffuse;
+}
+
+Color Light::getSpectral() const {
+    return light_colors.specular;
+}
+

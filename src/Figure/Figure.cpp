@@ -255,6 +255,9 @@ void Figure::DifuusLichtInf(const vector<Light *> &lights) {
 
         }
         Color result = LightTools::SumDifuusInf(lights, angles);
+
+        Color difuus_color = reflections.diffuse_color;
+
         face.difuus_inf = Color(result.red*difuus_color.red, result.green*difuus_color.green, result.blue*difuus_color.blue);
 
     }

@@ -7,7 +7,7 @@
 #include "../Figure/Figure.h"
 #include "../Figure/vector3d.h"
 
-#include "../Configuration/ini_configuration.h"
+#include "../ConfigReaders/FigureReader.h"
 
 
 namespace Bodies3D{

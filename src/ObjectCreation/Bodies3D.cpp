@@ -544,12 +544,9 @@ namespace Bodies3D{
 
             vector<vector<int>> faces;
             new_sub_figure->Scalar(1/scale);
-            new_sub_figure->difuus_color = fig->difuus_color;
-            new_sub_figure->spiegeld_color = fig->spiegeld_color;
-            new_sub_figure->reflectie_index = fig->reflectie_index;
+            new_sub_figure->reflections = fig->reflections;
             new_sub_figure->texture = fig->texture;
             new_sub_figure->useTexture = fig->useTexture;
-            new_sub_figure->ambient_intensiteit = fig->ambient_intensiteit;
             new_sub_figure->texture_co = fig->texture_co;
             new_sub_figure->texture_coord = fig->texture_coord;
             new_sub_figure->cube_mapping = fig->cube_mapping;
@@ -575,12 +572,9 @@ namespace Bodies3D{
         for (auto p: fig->points){
             Figure* bol = CreateSphere(fig->ambient_color, m);
             bol->FullRotScaleMove(0, 0, 0, radius, p);
-            bol->difuus_color = fig->difuus_color;
-            bol->spiegeld_color = fig->spiegeld_color;
-            bol->ambient_intensiteit = fig->ambient_intensiteit;
+            bol->reflections = fig->reflections;
             bol->useTexture = fig->useTexture;
             bol->texture = fig->texture;
-            bol->reflectie_index = fig->reflectie_index;
 
             fractal_output.push_back(bol);
         }
@@ -607,12 +601,9 @@ namespace Bodies3D{
                 cylinder->RotateX(phi*180/M_PI*-1);
                 cylinder->RotateZ((theta-M_PI/2)*180/M_PI);
 
-                cylinder->difuus_color = fig->difuus_color;
-                cylinder->spiegeld_color = fig->spiegeld_color;
-                cylinder->ambient_intensiteit = fig->ambient_intensiteit;
+                cylinder->reflections = fig->reflections;
                 cylinder->useTexture = fig->useTexture;
                 cylinder->texture = fig->texture;
-                cylinder->reflectie_index = fig->reflectie_index;
 
                 cylinder->FullRotScaleMove(0, 0, 0, radius, p1);
 

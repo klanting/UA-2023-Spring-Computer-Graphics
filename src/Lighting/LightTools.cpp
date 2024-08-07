@@ -10,9 +10,9 @@ namespace LightTools {
         double green = 0;
         double blue = 0;
         for (auto l: lights){
-            red += l->ambient.red;
-            green += l->ambient.green;
-            blue += l->ambient.blue;
+            red += l->getAmbient().red;
+            green += l->getAmbient().green;
+            blue += l->getAmbient().blue;
         }
 
         return Color(red, green, blue);
@@ -26,14 +26,18 @@ namespace LightTools {
             Light* l = lights[i];
 
             if (angles[i] > 0){
-                red += l->difuus_infinity.red*angles[i];
-                green += l->difuus_infinity.green*angles[i];
-                blue += l->difuus_infinity.blue*angles[i];
+                red += l->getDiffuse().red*angles[i];
+                green += l->getDiffuse().green*angles[i];
+                blue += l->getDiffuse().blue*angles[i];
             }
 
         }
 
         return Color(red, green, blue);
+    }
+
+    double getIntensity(Light* l, double angle){
+        return (angle-l->spot_angle)/(1.0-l->spot_angle);
     }
 
     Color SumDifuus(const vector<Light*>& lights, const vector<double> &angles){
@@ -42,10 +46,12 @@ namespace LightTools {
         double blue = 0;
         for (int i = 0; i < lights.size(); i++){
             Light* l = lights[i];
+
+            double intensity = getIntensity(l, angles[i]);
             if (angles[i] >= l->spot_angle){
-                red += l->difuus.red*(angles[i]-l->spot_angle)/(1.0-l->spot_angle);
-                green += l->difuus.green*(angles[i]-l->spot_angle)/(1.0-l->spot_angle);
-                blue += l->difuus.blue*(angles[i]-l->spot_angle)/(1.0-l->spot_angle);
+                red += l->getDiffuse().red*intensity;
+                green += l->getDiffuse().green*intensity;
+                blue += l->getDiffuse().blue*intensity;
             }
 
         }
@@ -60,9 +66,9 @@ namespace LightTools {
         for (int i = 0; i < lights.size(); i++){
             Light* l = lights[i];
             if (angles[i] > 0){
-                red += l->spiegelend.red*pow(angles[i], reflectie_index);
-                green += l->spiegelend.green*pow(angles[i], reflectie_index);
-                blue += l->spiegelend.blue*pow(angles[i], reflectie_index);
+                red += l->getSpectral().red*pow(angles[i], reflectie_index);
+                green += l->getSpectral().green*pow(angles[i], reflectie_index);
+                blue += l->getSpectral().blue*pow(angles[i], reflectie_index);
             }
 
         }

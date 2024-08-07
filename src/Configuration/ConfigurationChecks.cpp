@@ -4,11 +4,11 @@
 
 #include "ConfigurationChecks.h"
 
-void ConfigurationChecks::checkTextureMapping(Figure *f, const ini::SectionReader &sr) {
-    bool texture_mapping = sr.getBoolValue("textureMapping");
+void ConfigurationChecks::checkTextureMapping(Figure *f, const ini::FigureReader &sr) {
+    bool texture_mapping = sr.getBool("textureMapping");
 
     if (texture_mapping){
-        string path = sr.getStringValue("texturePath");
+        string path = sr.getString("texturePath");
 
 
         ini::DoubleTuple P = sr.getDoubleTuple("textureP");

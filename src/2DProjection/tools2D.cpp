@@ -264,7 +264,7 @@ namespace tool2D{
         }
     }
 
-    void faceActions(Figure* figure, Z_buffer& z_buf, BufferStorage& buf_store){
+    void faceZBufferingFilling(Figure* figure, Z_buffer& z_buf, BufferStorage& buf_store){
         int face_counter = 0;
         for (auto face: figure->faces){
             Vector3D A = figure->points[face.points[0]];
@@ -286,9 +286,10 @@ namespace tool2D{
             double y_max = max(A.y, B.y);
             y_max = max(C.y, y_max);
 
+            vector<double> valid_x_i;
+            valid_x_i.reserve(2);
+
             for (int y_i= lround(y_min+0.5); y_i <= lround(y_max-0.5); y_i++){
-                vector<double> valid_x_i;
-                valid_x_i.reserve(2);
 
                 for (int i = 0; i<3; i++){
                     auto t1 = temp_fases[i%3];
@@ -319,16 +320,18 @@ namespace tool2D{
                     }
 
                 }
+
+                valid_x_i.clear();
             }
 
             face_counter += 1;
         }
     }
 
-    img::EasyImage draw2DTriangle(const vector<Figure*> &figures, const Color &bc, double d, pair<double, double> deviation, pair<int, int> image_size, const vector<Light*>& lights){
+    img::EasyImage draw2DTriangle(const vector<Figure*> &figures, const Color &bc, double d, pair<double, double> deviation, const  pair<unsigned int, unsigned int>& image_size, const vector<Light*>& lights){
         img::EasyImage image(image_size.first, image_size.second);
-        Z_buffer z_buf((unsigned int) image_size.first, (unsigned int) image_size.second);
-        BufferStorage buf_store((unsigned int) image_size.first, (unsigned int) image_size.second);
+        Z_buffer z_buf(image_size.first, image_size.second);
+        BufferStorage buf_store(image_size.first, image_size.second);
         img::Color easy_bc(lround(bc.red*255), lround(bc.green*255), lround(bc.blue*255));
         image.clear(easy_bc);
         for (auto& figure: figures){
@@ -338,7 +341,7 @@ namespace tool2D{
 
             doFigureProjection(figure, d, deviation);
 
-            faceActions(figure, z_buf, buf_store);
+            faceZBufferingFilling(figure, z_buf, buf_store);
         }
 
 
@@ -361,10 +364,10 @@ namespace tool2D{
                 if (figure->useTexture){
                     Color tex = figure->texture->getColor(original_point);
                     Color ambient_ref = tex;
-                    ambient_ref.multiply(figure->ambient_intensiteit);
+                    ambient_ref.multiply(figure->reflections.ambient_intensity);
                     figure->ambient_color = ambient_ref;
-                    figure->difuus_color = tex;
-                    figure->spiegeld_color = tex;
+                    figure->reflections.diffuse_color = tex;
+                    figure->reflections.spectral_color = tex;
                 }
 
 
@@ -385,10 +388,10 @@ namespace tool2D{
                         Color tex = figure->texture_co->getAmbient(vect.first.x, vect.first.y);
 
                         Color ambient_ref = tex;
-                        ambient_ref.multiply(figure->ambient_intensiteit);
+                        ambient_ref.multiply(figure->reflections.ambient_intensity);
                         figure->ambient_color = ambient_ref;
                         if (figure->texture_co->img_dif){
-                            figure->difuus_color = figure->texture_co->getDifuus(vect.first.x, vect.first.y);
+                            figure->reflections.diffuse_color = figure->texture_co->getDifuus(vect.first.x, vect.first.y);
                         }
 
                     }
@@ -399,7 +402,7 @@ namespace tool2D{
                     Vector3D normaal_original = figure->getOriginal(face.normaal, false);
                     Color tex = figure->cube_map->getColor(original_point, normaal_original)[0];
                     Color ambient_ref = tex;
-                    ambient_ref.multiply(figure->ambient_intensiteit);
+                    ambient_ref.multiply(figure->reflections.diffuse_color);
                     figure->ambient_color = ambient_ref;
                 }
 
@@ -416,7 +419,7 @@ namespace tool2D{
 
                 Color diffusSpec_color = LightTools::DifuusSpecularLicht(lights, face.normaal,
                                                                          original_point_eye,
-                                                                         figure->difuus_color, figure->spiegeld_color, figure->reflectie_index);
+                                                                         figure->reflections.diffuse_color, figure->reflections.spectral_color, figure->reflections.reflection_index);
 
                 double red = figure->ambient_color.red + face.difuus_inf.red + diffusSpec_color.red;
                 double green = figure->ambient_color.green + face.difuus_inf.green + diffusSpec_color.green;

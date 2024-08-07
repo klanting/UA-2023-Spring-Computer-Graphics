@@ -4,7 +4,6 @@
 
 #include <fstream>
 #include <iostream>
-#include <stdexcept>
 #include <string>
 #include <list>
 #include <algorithm>
@@ -25,10 +24,12 @@
 #include "src/Configuration/obj_parser.h"
 #include "src/CubeMapping/CubeMap.h"
 #include "src/Textures/TextureCoord.h"
-#include "src/ObjectType/FigureType.h"
-#include "src/ObjectType/FigureFactory.h"
+#include "src/InputType/FigureType.h"
+#include "src/ObjectCreation/FigureFactory.h"
 #include "src/Perspective/EyePerspective.h"
 #include "src/Configuration/ConfigurationChecks.h"
+#include "src/ConfigReaders/LightReader.h"
+
 using namespace std;
 using Lines2D = list<Line2D*>;
 
@@ -108,9 +109,11 @@ Figure* ReadObject2(const obj::OBJFile& ob){
     Figure* f = new Figure(points, indexes, uv, v_normaal, Color(255, 0, 0));
     f->texture_coord = true;
     f->texture_co = t;
-    f->spiegeld_color = Color(sp[0], sp[1], sp[2]);
-    f->difuus_color = Color(d[0], d[1], d[2]);
-    f->reflectie_index = ms;
+
+    f->reflections.spectral_color = Color(sp[0], sp[1], sp[2]);
+    f->reflections.diffuse_color = Color(d[0], d[1], d[2]);
+    f->reflections.reflection_index = ms;
+
     return f;
 }
 
@@ -176,38 +179,33 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
     }else if (type == "Wireframe" || type == "ZBufferedWireframe" || type == "ZBuffering" || type == "LightedZBuffering"){
 
         vector<Light*> Lights;
+
+        Color a_int(0, 0, 0);
         if (light_support){
             int lights = configuration["General"]["nrLights"].as_int_or_die();
+            Lights.reserve(lights);
+
             for (int i=0; i<lights; i++){
-                ini::DoubleTuple ambient_tup = configuration["Light"+to_string(i)]["ambientLight"].as_double_tuple_or_default({0, 0, 0});
-                Color ambient_component = Color(ambient_tup[0], ambient_tup[1], ambient_tup[2]);
 
-                ini::DoubleTuple difuus_tup = configuration["Light"+to_string(i)]["diffuseLight"].as_double_tuple_or_default({0, 0, 0});
-                Color difuus_component = Color(difuus_tup[0], difuus_tup[1], difuus_tup[2]);
+                ini::LightReader lr = ini::LightReader(configuration["Light"+to_string(i)]);
 
-                ini::DoubleTuple specular_tup = configuration["Light"+to_string(i)]["specularLight"].as_double_tuple_or_default({0, 0, 0});
-                Color specular_component = Color(specular_tup[0], specular_tup[1], specular_tup[2]);
+                LightColors light_colors = lr.getLightColors();
 
-                bool difuus_inf = configuration["Light"+to_string(i)]["infinity"].as_bool_or_default(false);
+                auto l = new Light();
+                l->setLightColors(light_colors);
+                if (lr.isDiffuseInf()){
 
-                Light* l = new Light();
-                l->ambient = ambient_component;
-                if (difuus_inf){
-                    l->difuus_infinity = difuus_component;
-                    ini::DoubleTuple direction_tup = configuration["Light"+to_string(i)]["direction"].as_double_tuple_or_die();
-                    l->direction = Vector3D::point(direction_tup[0], direction_tup[1], direction_tup[2]);
+                    l->direction = lr.getPoint("direction");
                     l->inf = true;
 
                 }else{
-                    l->difuus = difuus_component;
-                    double spot_angle = configuration["Light"+to_string(i)]["spotAngle"].as_double_or_default(90);
+                    double spot_angle = lr.getDouble("spotAngle", 90);
                     l->spot_angle = cos(spot_angle*M_PI/180.0);
-                    ini::DoubleTuple location_tup = configuration["Light"+to_string(i)]["location"].as_double_tuple_or_default({0, 0, 0});
-                    l->location = Vector3D::point(location_tup[0], location_tup[1], location_tup[2]);
-                }
-                l->spiegelend = specular_component;
 
-                if (shadow_support && !difuus_inf){
+                    l->location = lr.getPoint("location", Vector3D::point(0, 0, 0));
+                }
+
+                if (shadow_support && !lr.isDiffuseInf()){
                     l->mask = new ShadowMask();
                     l->shadow_size = shadow_size;
                     l->shadow = true;
@@ -215,6 +213,11 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
                 Lights.push_back(l);
             }
+
+            /*
+             * Decide ambient color
+             * */
+            a_int = LightTools::SumAmbient(Lights);
         }
 
 
@@ -230,27 +233,21 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
         vector<Figure*> figures;
 
-        /*
-         * Decide ambient color
-         * */
-        Color a_int(0, 0, 0);
-        if (light_support){
-            a_int = LightTools::SumAmbient(Lights);
-        }
 
         for (int i=0; i<figure_amount; i++){
 
-            ini::SectionReader sr = ini::SectionReader(light_support, configuration["Figure"+to_string(i)], a_int);
+            ini::FigureReader fr = ini::FigureReader(light_support, configuration["Figure" + to_string(i)], a_int);
 
             auto section = configuration["Figure"+to_string(i)];
 
-            bool has_object = sr.getBoolValue("Object");
-            bool do_cube_mapping = sr.getBoolValue("cubeMapping");
-            double cube_mapping_size = section["cubeMapSize"].as_double_or_default(1);
+            bool has_object = fr.getBool("Object");
+            bool do_cube_mapping = fr.getBool("cubeMapping");
+
+            double cube_mapping_size = fr.getDouble("cubeMapSize", 1);
 
             if (has_object){
 
-                string object_path = sr.getStringValue("objectPath");
+                string object_path = fr.getString("objectPath");
                 obj::OBJFile ob;
                 ifstream ob_file(object_path);
                 ob_file >> ob;
@@ -260,7 +257,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
                 f->cube_mapping = do_cube_mapping;
                 if (do_cube_mapping){
-                    string mtl_path = sr.getStringValue("cubeMapPath");
+                    string mtl_path = fr.getString("cubeMapPath");
                     obj::MTLLibrary mtl;
                     ifstream mtl_file(mtl_path);
                     mtl_file >> mtl;
@@ -270,74 +267,54 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                     f->cube_map = c_map;
                 }
 
-                f->reflectie_index = 10;
-                f->ambient_intensiteit = LightTools::SumAmbient(Lights);
-                f->fix_round = sr.getBoolValue("fixRound");
+
+                f->reflections.reflection_index = 10;
+                f->reflections.ambient_intensity = LightTools::SumAmbient(Lights);
+
+                f->fix_round = fr.getBool("fixRound");
 
                 continue;
             }
 
-            bool thick = false;
-
-            string figure_type_string = sr.getStringValue("type");
+            string figure_type_string = fr.getString("type");
 
             FigureType figure_type = FigureType(figure_type_string);
 
-            if (figure_type_string.substr(0, 5) == "Thick"){
-                thick = true;
-                figure_type_string = figure_type_string.substr(5, figure_type_string.size() - 5);
-            }
+            Reflections reflections = fr.getReflections();
 
-            ini::DoubleTuple difuus_tup = section["diffuseReflection"].as_double_tuple_or_default({0, 0, 0});
-            Color d(difuus_tup[0], difuus_tup[1], difuus_tup[2]);
+            double rot_x = fr.getDouble("rotateX");
+            double rot_y = fr.getDouble("rotateY");
+            double rot_z = fr.getDouble("rotateZ");
+            double scale = fr.getDouble("scale");
 
-            ini::DoubleTuple specular_tup = section["specularReflection"].as_double_tuple_or_default({0, 0, 0});
-            Color s(specular_tup[0], specular_tup[1], specular_tup[2]);
+            Vector3D center = fr.getPoint("center");
 
-            double specular_index = section["reflectionCoefficient"].as_double_or_default(1);
-
-
-            double rot_x = section["rotateX"].as_double_or_die();
-            double rot_y = section["rotateY"].as_double_or_die();
-            double rot_z = section["rotateZ"].as_double_or_die();
-            double scale = section["scale"].as_double_or_die();
-            ini::DoubleTuple center_tup = section["center"].as_double_tuple_or_die();
-            Vector3D center = Vector3D::point(center_tup[0], center_tup[1], center_tup[2]);
-
-
-
-            Figure* f = FigureFactory::create(figure_type, sr);
+            Figure* f = FigureFactory::create(figure_type, fr);
             f->FullRotScaleMove(rot_x, rot_y, rot_z, scale, center);
 
-            f->difuus_color = d;
-            f->spiegeld_color = s;
-            f->reflectie_index = specular_index;
-            f->ambient_intensiteit = a_int;
+            f->reflections = reflections;
 
-
-            ConfigurationChecks::checkTextureMapping(f, sr);
+            ConfigurationChecks::checkTextureMapping(f, fr);
 
             if (figure_type.isFractal()){
                 double fractal_scale;
 
                 int it = section["nrIterations"].as_int_or_die();
-                if (figure_type_string != "MengerSponge"){
+                if (figure_type.getBaseType() != "MengerSponge"){
                     fractal_scale = section["fractalScale"].as_double_or_die();
                 }else{
                     fractal_scale = 3;
                 }
 
-                Bodies3D::generateFractal(f, figures, it, fractal_scale, fractal_scale, figure_type.getFractalFree());
+                Bodies3D::generateFractal(f, figures, it, fractal_scale, fractal_scale, figure_type.getBaseType());
             }else{
                 figures.push_back(f);
 
             }
 
-
-
             f->cube_mapping = do_cube_mapping;
             if (do_cube_mapping){
-                string mtl_path = sr.getStringValue("cubeMapPath");
+                string mtl_path = fr.getString("cubeMapPath");
                 obj::MTLLibrary mtl;
                 ifstream mtl_file(mtl_path);
                 mtl_file >> mtl;
@@ -347,10 +324,10 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                 f->cube_map = c_map;
             }
 
-            if(thick){
-                double thick_scale = section["radius"].as_double_or_die();
-                int m = section["m"].as_int_or_die();
-                int n = section["n"].as_int_or_die();
+            if(figure_type.isThick()){
+                double thick_scale = fr.getDouble("radius");
+                int m = fr.getInt("m");
+                int n = fr.getInt("n");
                 Bodies3D::makeThick(f, figures, thick_scale, m, n);
             }
 
@@ -416,6 +393,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
         }
 
+        img::EasyImage image;
         if (triangulate){
             tuple<double, pair<double, double>, pair<double, double>> relocate_data = tool2D::get_scale_factor_all(figures, size, 0.95);
 
@@ -426,29 +404,23 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
             for (auto figure: figures){
                 figure->UndoProjection(1);
             }
-            img::EasyImage image;
+
             image = tool2D::draw2DTriangle(figures, bc, d, deviation, image_size, Lights);
 
-            for (auto f: figures){
-                delete f;
-            }
-
-            return image;
-
         }else{
-            img::EasyImage image;
             if (z_buffering){
                 image = tool2D::draw2DLines_z_buffering(figures, size, bc);
             }else{
                 image = tool2D::draw2DLines(figures, size, bc);
             }
 
-            for (auto f: figures){
-                delete f;
-            }
-
-            return image;
         }
+
+        for (auto f: figures){
+            delete f;
+        }
+
+        return image;
 
 
     }

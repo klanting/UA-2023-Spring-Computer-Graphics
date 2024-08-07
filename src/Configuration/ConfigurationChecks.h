@@ -6,12 +6,12 @@
 #define ENGINE_CONFIGURATIONCHECKS_H
 
 
-#include "SectionReader.h"
+#include "../ConfigReaders/FigureReader.h"
 #include "../Figure/Figure.h"
 
 class ConfigurationChecks {
 public:
-    static void checkTextureMapping(Figure* f, const ini::SectionReader& sr);
+    static void checkTextureMapping(Figure* f, const ini::FigureReader& sr);
 
 };
 
