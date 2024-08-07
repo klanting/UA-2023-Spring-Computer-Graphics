@@ -7,7 +7,7 @@
 
 
 #include "SectionReader.h"
-#include "../../Figure.h"
+#include "../Figure/Figure.h"
 
 class ConfigurationChecks {
 public:

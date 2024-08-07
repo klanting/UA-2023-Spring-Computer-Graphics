@@ -2,10 +2,10 @@
 
 #ifndef ENGINE_FIGUREFACTORY_H
 #define ENGINE_FIGUREFACTORY_H
-#include "../../Bodies3D.h"
+#include "../ObjectCreation/Bodies3D.h"
 #include "FigureType.h"
-#include "../../Color.h"
-#include "../../ini_configuration.h"
+#include "../Figure/Color.h"
+#include "../Configuration/ini_configuration.h"
 #include "../Configuration/SectionReader.h"
 
 class FigureFactory {

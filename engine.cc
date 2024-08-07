@@ -1,6 +1,6 @@
-#include "easy_image.h"
-#include "ini_configuration.h"
-#include "l_parser.h"
+#include "src/2DProjection/easy_image.h"
+#include "src/Configuration/ini_configuration.h"
+#include "src/LSystems/l_parser.h"
 
 #include <fstream>
 #include <iostream>
@@ -9,22 +9,22 @@
 #include <list>
 #include <algorithm>
 
-#include "Line2D.h"
-#include "Color.h"
-#include "tools2D.h"
-#include "L_system.h"
-#include "vector3d.h"
-#include "Figure.h"
-#include "Bodies3D.h"
+#include "src/Figure/Line2D.h"
+#include "src/Figure/Color.h"
+#include "src/2DProjection/tools2D.h"
+#include "src/LSystems/L_system.h"
+#include "src/Figure/vector3d.h"
+#include "src/Figure/Figure.h"
+#include "src/ObjectCreation/Bodies3D.h"
 #include <cmath>
-#include "Clipping.h"
-#include "Light.h"
-#include "LightTools.h"
-#include "ShadowMask.h"
+#include "src/Clipping/Clipping.h"
+#include "src/Lighting/Light.h"
+#include "src/Lighting/LightTools.h"
+#include "src/Lighting/ShadowMask.h"
 
-#include "obj_parser.h"
-#include "CubeMap.h"
-#include "TextureCoord.h"
+#include "src/Configuration/obj_parser.h"
+#include "src/CubeMapping/CubeMap.h"
+#include "src/Textures/TextureCoord.h"
 #include "src/ObjectType/FigureType.h"
 #include "src/ObjectType/FigureFactory.h"
 #include "src/Perspective/EyePerspective.h"

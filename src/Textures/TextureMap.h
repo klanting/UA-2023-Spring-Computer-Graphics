@@ -7,8 +7,8 @@
 #include "iostream"
 #include "fstream"
 #include "vector"
-#include "vector3d.h"
-#include "Color.h"
+#include "../Figure/vector3d.h"
+#include "../Figure/Color.h"
 using namespace std;
 class TextureMap {
 public:

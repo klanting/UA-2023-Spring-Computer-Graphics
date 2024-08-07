@@ -1,14 +1,14 @@
 
 
 #include "easy_image.h"
-#include "Line2D.h"
+#include "../Figure/Line2D.h"
 #include <list>
 #include <string>
 #include <iostream>
 #include <vector>
-#include "Face.h"
-#include "vector3d.h"
-#include "Figure.h"
+#include "../Figure/Face.h"
+#include "../Figure/vector3d.h"
+#include "../Figure/Figure.h"
 #include "BufferStorage.h"
 
 

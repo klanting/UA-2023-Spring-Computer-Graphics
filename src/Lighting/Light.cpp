@@ -3,11 +3,11 @@
 //
 
 #include "Light.h"
-#include "Color.h"
+#include "../Figure/Color.h"
 #include <cmath>
 #include <tuple>
-#include "Figure.h"
-#include "tools2D.h"
+#include "../Figure/Figure.h"
+#include "../2DProjection/tools2D.h"
 Light::Light() {
 
 }

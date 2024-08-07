@@ -3,7 +3,7 @@
 //
 
 #include "Bodies3D.h"
-#include "Color.h"
+#include "../Figure/Color.h"
 #include <math.h>
 #include <algorithm>
 #include <map>

@@ -4,8 +4,8 @@
 
 #ifndef ENGINE_LIGHT_H
 #define ENGINE_LIGHT_H
-#include "Color.h"
-#include "vector3d.h"
+#include "../Figure/Color.h"
+#include "../Figure/vector3d.h"
 #include "ShadowMask.h"
 
 class Figure;

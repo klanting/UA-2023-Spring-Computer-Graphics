@@ -2,14 +2,14 @@
 
 #include "tools2D.h"
 #include "easy_image.h"
-#include "Line2D.h"
-#include "Color.h"
+#include "../Figure/Line2D.h"
+#include "../Figure/Color.h"
 #include <list>
 #include <string>
 #include <iostream>
 #include <cmath>
 #include <limits>
-#include "Figure.h"
+#include "../Figure/Figure.h"
 #include "Z_buffer.h"
 #include <tuple>
 #include "BufferStorage.h"

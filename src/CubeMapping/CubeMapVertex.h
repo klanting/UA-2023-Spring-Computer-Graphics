@@ -4,7 +4,7 @@
 
 #ifndef ENGINE_CUBEMAPVERTEX_H
 #define ENGINE_CUBEMAPVERTEX_H
-#include "vector3d.h"
+#include "../Figure/vector3d.h"
 using namespace std;
 class CubeMapVertex {
 public:

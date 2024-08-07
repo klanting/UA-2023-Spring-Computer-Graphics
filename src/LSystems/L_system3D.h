@@ -8,13 +8,13 @@
 #include <string>
 #include <list>
 #include <vector>
-#include "easy_image.h"
-#include "ini_configuration.h"
+#include "../2DProjection/easy_image.h"
+#include "../Configuration/ini_configuration.h"
 #include "l_parser.h"
 #include "stack"
-#include "tools2D.h"
-#include "vector3d.h"
-#include "Figure.h"
+#include "../2DProjection/tools2D.h"
+#include "../Figure/vector3d.h"
+#include "../Figure/Figure.h"
 
 class L_system3D {
 public:

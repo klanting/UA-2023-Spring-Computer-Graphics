@@ -7,8 +7,8 @@
 
 #include <vector>
 
-#include "Figure.h"
-#include "Face.h"
+#include "../Figure/Figure.h"
+#include "../Figure/Face.h"
 using namespace std;
 class BufferStorage: public vector<vector<pair<Figure*, int>>> {
 public:

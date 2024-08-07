@@ -7,7 +7,7 @@
 #include "CubeMapVertex.h"
 #include <vector>
 #include "CubeMapVertex.h"
-#include "easy_image.h"
+#include "../2DProjection/easy_image.h"
 class CubeMapFace {
 public:
     vector<CubeMapVertex> vertexes;

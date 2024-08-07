@@ -3,7 +3,7 @@
 //
 
 #include "SectionReader.h"
-#include "../../LightTools.h"
+#include "../Lighting/LightTools.h"
 
 namespace ini {
 

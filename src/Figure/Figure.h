@@ -9,15 +9,15 @@
 #include "vector3d.h"
 #include "Face.h"
 #include "Color.h"
-#include "easy_image.h"
+#include "../2DProjection/easy_image.h"
 #include "Line2D.h"
 #include "list"
-#include "Light.h"
-#include "LightTools.h"
-#include "TextureMap.h"
-#include "CubeMap.h"
-#include "TextureCoord.h"
-#include "src/Perspective/EyePerspective.h"
+#include "../Lighting/Light.h"
+#include "../Lighting/LightTools.h"
+#include "../Textures/TextureMap.h"
+#include "../CubeMapping/CubeMap.h"
+#include "../Textures/TextureCoord.h"
+#include "../Perspective/EyePerspective.h"
 using namespace std;
 
 class Figure {

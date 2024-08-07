@@ -6,11 +6,11 @@
 #define ENGINE_L_SYSTEM_H
 #include "l_parser.h"
 #include <string>
-#include "Line2D.h"
+#include "../Figure/Line2D.h"
 #include <list>
 #include <vector>
-#include "easy_image.h"
-#include "ini_configuration.h"
+#include "../2DProjection/easy_image.h"
+#include "../Configuration/ini_configuration.h"
 #include "l_parser.h"
 #include "stack"
 using namespace std;

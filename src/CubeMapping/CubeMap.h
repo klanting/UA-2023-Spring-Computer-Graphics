@@ -4,11 +4,11 @@
 
 #ifndef ENGINE_CUBEMAP_H
 #define ENGINE_CUBEMAP_H
-#include "vector3d.h"
+#include "../Figure/vector3d.h"
 #include <vector>
 #include "CubeMapFace.h"
-#include "Color.h"
-#include "easy_image.h"
+#include "../Figure/Color.h"
+#include "../2DProjection/easy_image.h"
 using namespace std;
 class CubeMap {
 public:

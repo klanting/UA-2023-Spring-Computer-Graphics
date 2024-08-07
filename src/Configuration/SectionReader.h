@@ -4,9 +4,9 @@
 
 #ifndef ENGINE_SECTIONREADER_H
 #define ENGINE_SECTIONREADER_H
-#include "../../ini_configuration.h"
+#include "ini_configuration.h"
 #include <string>
-#include "../../Color.h"
+#include "../Figure/Color.h"
 
 namespace ini {
 

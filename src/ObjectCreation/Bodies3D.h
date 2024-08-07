@@ -4,10 +4,10 @@
 
 #ifndef ENGINE_BODIES3D_H
 #define ENGINE_BODIES3D_H
-#include "Figure.h"
-#include "vector3d.h"
+#include "../Figure/Figure.h"
+#include "../Figure/vector3d.h"
 
-#include "ini_configuration.h"
+#include "../Configuration/ini_configuration.h"
 
 
 namespace Bodies3D{

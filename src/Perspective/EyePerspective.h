@@ -6,7 +6,7 @@
 #define ENGINE_EYEPERSPECTIVE_H
 
 #include <cmath>
-#include "../../vector3d.h"
+#include "../Figure/vector3d.h"
 
 class EyePerspective {
 public:

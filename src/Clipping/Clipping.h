@@ -4,7 +4,7 @@
 
 #ifndef ENGINE_CLIPPING_H
 #define ENGINE_CLIPPING_H
-#include "Figure.h"
+#include "../Figure/Figure.h"
 #include <vector>
 
 namespace Clipping {
