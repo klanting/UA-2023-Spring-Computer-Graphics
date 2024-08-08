@@ -2,8 +2,8 @@
 // Created by tibov on 25/02/23.
 //
 
-#ifndef ENGINE_L_SYSTEM_H
-#define ENGINE_L_SYSTEM_H
+#ifndef ENGINE_LSYSTEM_H
+#define ENGINE_LSYSTEM_H
 #include "l_parser.h"
 #include <string>
 #include "../Figure/Line2D.h"
@@ -16,11 +16,11 @@
 using namespace std;
 using Lines2D = list<Line2D*>;
 
-class L_system {
+class LSystem {
 public:
-    L_system(const LParser::LSystem2D &l_system, const Color &c);
+    LSystem(const LParser::LSystem2D &l_system, const Color &c);
 
-    ~L_system();
+    ~LSystem();
     string l_replace(const char& v, int amount);
     void l_fill(const string& s);
     Lines2D get_lines();
@@ -44,4 +44,4 @@ private:
 };
 
 
-#endif //ENGINE_L_SYSTEM_H
+#endif //ENGINE_LSYSTEM_H

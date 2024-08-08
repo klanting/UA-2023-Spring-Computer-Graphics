@@ -2,8 +2,8 @@
 // Created by tibov on 19/03/23.
 //
 
-#ifndef ENGINE_L_SYSTEM3D_H
-#define ENGINE_L_SYSTEM3D_H
+#ifndef ENGINE_LSYSTEM3D_H
+#define ENGINE_LSYSTEM3D_H
 #include "l_parser.h"
 #include <string>
 #include <list>
@@ -16,9 +16,9 @@
 #include "../Figure/vector3d.h"
 #include "../Figure/Figure.h"
 
-class L_system3D {
+class LSystem3D {
 public:
-    L_system3D(const LParser::LSystem3D &l_system, const Color &c);
+    LSystem3D(const LParser::LSystem3D &l_system, const Color &c);
     //~L_system3D();
     string l_replace(const char& v, int amount);
     void l_fill(const string& s);
@@ -40,4 +40,4 @@ private:
 };
 
 
-#endif //ENGINE_L_SYSTEM3D_H
+#endif //ENGINE_LSYSTEM3D_H

@@ -11,7 +11,7 @@
 #include "src/Figure/Line2D.h"
 #include "src/Figure/Color.h"
 #include "src/2DProjection/tools2D.h"
-#include "src/LSystems/L_system.h"
+#include "src/LSystems/LSystem.h"
 #include "src/Figure/vector3d.h"
 #include "src/Figure/Figure.h"
 #include "src/ObjectCreation/Bodies3D.h"
@@ -29,6 +29,8 @@
 #include "src/Perspective/EyePerspective.h"
 #include "src/Configuration/ConfigurationChecks.h"
 #include "src/ConfigReaders/LightReader.h"
+#include "src/ObjectCreation/LightCreator.h"
+
 
 using namespace std;
 using Lines2D = list<Line2D*>;
@@ -157,13 +159,11 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
 
     if (type == "2DLSystem"){
+        ini::ConfigReader cr = ini::ConfigReader(configuration["2DLSystem"]);
 
-        string input_file = configuration["2DLSystem"]["inputfile"].as_string_or_die();
-        ini::DoubleTuple c_tuple = configuration["2DLSystem"]["color"].as_double_tuple_or_die();
-
-        bool do_random = configuration["2DLSystem"]["stochastic"].as_bool_or_default(false);
-
-        Color c(c_tuple[0], c_tuple[1], c_tuple[2]);
+        string input_file = cr.getString("inputfile");
+        Color c = cr.getColor("color");
+        bool do_random = cr.getBool("stochastic");
 
         LParser::LSystem2D l_system;
         l_system.SetRandom(do_random);
@@ -172,7 +172,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
         input_stream >> l_system;
         input_stream.close();
 
-        L_system l(l_system, c);
+        LSystem l(l_system, c);
         Lines2D lines = l.get_lines();
         img::EasyImage image = tool2D::draw2DLines(lines, size, bc, false);
         return image;
@@ -188,28 +188,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
             for (int i=0; i<lights; i++){
 
                 ini::LightReader lr = ini::LightReader(configuration["Light"+to_string(i)]);
-
-                LightColors light_colors = lr.getLightColors();
-
-                auto l = new Light();
-                l->setLightColors(light_colors);
-                if (lr.isDiffuseInf()){
-
-                    l->direction = lr.getPoint("direction");
-                    l->inf = true;
-
-                }else{
-                    double spot_angle = lr.getDouble("spotAngle", 90);
-                    l->spot_angle = cos(spot_angle*M_PI/180.0);
-
-                    l->location = lr.getPoint("location", Vector3D::point(0, 0, 0));
-                }
-
-                if (shadow_support && !lr.isDiffuseInf()){
-                    l->mask = new ShadowMask();
-                    l->shadow_size = shadow_size;
-                    l->shadow = true;
-                }
+                Light* l = LightCreator::create(lr, shadow_support, shadow_size);
 
                 Lights.push_back(l);
             }

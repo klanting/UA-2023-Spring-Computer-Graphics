@@ -20,7 +20,9 @@ public:
     Light();
     Vector3D direction = Vector3D::point(0, 0, 0);
     Vector3D location = Vector3D::point(0, 0, 0);
+
     Vector3D original_location = Vector3D::point(0, 0, 0);
+
     double spot_angle = 0;
     bool inf = false;
     int shadow_size;
@@ -38,9 +40,9 @@ public:
     void shadow_transform(const vector<Figure*>& figures);
     bool same(const Vector3D& normal_point);
 
-    Color getAmbient() const;
-    Color getDiffuse() const;
-    Color getSpectral() const;
+    [[nodiscard]] Color getAmbient() const;
+    [[nodiscard]] Color getDiffuse() const;
+    [[nodiscard]] Color getSpectral() const;
 
     void setLightColors(const LightColors &lightColors);
 

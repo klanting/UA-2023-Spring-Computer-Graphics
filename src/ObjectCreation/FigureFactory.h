@@ -13,7 +13,6 @@ class FigureFactory {
      * Factory Design pattern for creating figures
      * */
 public:
-    explicit FigureFactory() = default;
     static Figure* create(const FigureType &figure_type, const ini::FigureReader& sr);
 private:
 

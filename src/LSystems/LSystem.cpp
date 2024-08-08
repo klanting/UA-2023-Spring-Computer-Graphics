@@ -2,7 +2,7 @@
 // Created by tibov on 25/02/23.
 //
 
-#include "L_system.h"
+#include "LSystem.h"
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -11,7 +11,7 @@
 
 
 
-L_system::L_system(const LParser::LSystem2D &l_system, const Color &c): l_system(l_system), c(c) {
+LSystem::LSystem(const LParser::LSystem2D &l_system, const Color &c): l_system(l_system), c(c) {
     const double pi = 3.14159265359;
     pos = {0, 0};
     initiator = l_system.get_initiator();
@@ -32,7 +32,7 @@ L_system::L_system(const LParser::LSystem2D &l_system, const Color &c): l_system
 }
 
 
-string L_system::l_replace(const char &v, int amount) {
+string LSystem::l_replace(const char &v, int amount) {
     if (amount == 0){
         string s(1, v);
         return s;
@@ -56,7 +56,7 @@ string L_system::l_replace(const char &v, int amount) {
     }
 }
 
-void L_system::l_fill(const string& s){
+void LSystem::l_fill(const string& s){
     stack<double> stack_x;
     stack<double> stack_y;
     stack<double> stack_angle;
@@ -95,7 +95,7 @@ void L_system::l_fill(const string& s){
                 last_line->p2 = p2;
             }else if (v){
 
-                Line2D* l = new Line2D(*(points.end()-2),*(points.end()-1), L_system::c);
+                Line2D* l = new Line2D(*(points.end()-2), *(points.end()-1), LSystem::c);
                 lines.push_back(l);
 
                 last_line = l;
@@ -110,12 +110,12 @@ void L_system::l_fill(const string& s){
 
 }
 
-Lines2D L_system::get_lines() {
+Lines2D LSystem::get_lines() {
 
     return lines;
 }
 
-L_system::~L_system() {
+LSystem::~LSystem() {
     for (Line2D* l : lines){
         delete l;
     }

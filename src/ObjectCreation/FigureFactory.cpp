@@ -3,7 +3,7 @@
 //
 
 #include "FigureFactory.h"
-#include "../LSystems/L_system3D.h"
+#include "../LSystems/LSystem3D.h"
 #include <map>
 #include <functional>
 
@@ -93,7 +93,7 @@ Figure *FigureFactory::create3DLSystem(const ini::FigureReader& sr) {
     input_stream >> l_system;
     input_stream.close();
 
-    L_system3D l(l_system, sr.getFigureColor());
+    LSystem3D l(l_system, sr.getFigureColor());
 
     return l.get_fig();
 }

@@ -2,10 +2,10 @@
 // Created by tibov on 19/03/23.
 //
 
-#include "L_system3D.h"
+#include "LSystem3D.h"
 #include <algorithm>
 #include <cmath>
-L_system3D::L_system3D(const LParser::LSystem3D &l_system, const Color &c): l_system(l_system), c(c)   {
+LSystem3D::LSystem3D(const LParser::LSystem3D &l_system, const Color &c): l_system(l_system), c(c)   {
     const double pi = 3.14159265359;
     pos = Vector3D::point(0, 0, 0);
 
@@ -27,7 +27,7 @@ L_system3D::L_system3D(const LParser::LSystem3D &l_system, const Color &c): l_sy
 
 }
 
-string L_system3D::l_replace(const char &v, int amount) {
+string LSystem3D::l_replace(const char &v, int amount) {
     if (amount == 0){
         string s(1, v);
         return s;
@@ -51,7 +51,7 @@ string L_system3D::l_replace(const char &v, int amount) {
     }
 }
 
-void L_system3D::l_fill(const string &s) {
+void LSystem3D::l_fill(const string &s) {
     stack<Vector3D> stack_pos;
     stack<Vector3D> stack_H;
     stack<Vector3D> stack_U;
@@ -153,7 +153,7 @@ void L_system3D::l_fill(const string &s) {
 
 }
 
-Figure *L_system3D::get_fig() {
+Figure *LSystem3D::get_fig() {
     Figure* fig = new Figure(points, lines, c);
     return fig;
 }
