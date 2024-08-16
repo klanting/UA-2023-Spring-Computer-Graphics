@@ -4,14 +4,14 @@
 
 #ifndef ENGINE_LSYSTEM_H
 #define ENGINE_LSYSTEM_H
-#include "l_parser.h"
+#include "../../libraries/l_parser.h"
 #include <string>
 #include "../Figure/Line2D.h"
 #include <list>
 #include <vector>
 #include "../../libraries/easy_image.h"
 #include "../../libraries/ini_configuration.h"
-#include "l_parser.h"
+#include "../../libraries/l_parser.h"
 #include "stack"
 using namespace std;
 using Lines2D = list<Line2D*>;

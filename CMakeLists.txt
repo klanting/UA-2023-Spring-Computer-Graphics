@@ -19,8 +19,8 @@ set(engine_sources
 	engine.cc
 		libraries/ini_configuration.cc
 		libraries/ini_configuration.h
-        src/LSystems/l_parser.cc
-        src/LSystems/l_parser.h
+		libraries/l_parser.cc
+		libraries/l_parser.h
 		src/Figure/Point2D.cpp src/Figure/Point2D.h src/Figure/Color.cpp src/Figure/Color.h src/Figure/Line2D.cpp src/Figure/Line2D.h src/2DProjection/tools2D.cpp src/2DProjection/tools2D.h src/LSystems/LSystem.cpp src/LSystems/LSystem.h
 		libraries/vector3d.cc libraries/vector3d.h src/Figure/Face.cpp src/Figure/Face.h src/Figure/Figure.cpp src/Figure/Figure.h src/ObjectCreation/Bodies3D.cpp src/ObjectCreation/Bodies3D.h src/LSystems/LSystem3D.cpp src/LSystems/LSystem3D.h src/2DProjection/Z_buffer.cpp src/2DProjection/Z_buffer.h src/Clipping/Clipping.cpp src/Clipping/Clipping.h src/Lighting/Light.cpp src/Lighting/Light.h src/Lighting/LightTools.cpp src/Lighting/LightTools.h src/2DProjection/BufferStorage.cpp src/2DProjection/BufferStorage.h src/Lighting/ShadowMask.cpp src/Lighting/ShadowMask.h src/Textures/TextureMap.cpp src/Textures/TextureMap.h src/Configuration/obj_parser.cc src/Configuration/obj_parser.h src/CubeMapping/CubeMap.cpp src/CubeMapping/CubeMap.h src/CubeMapping/CubeMapVertex.cpp src/CubeMapping/CubeMapVertex.h src/CubeMapping/CubeMapFace.cpp src/CubeMapping/CubeMapFace.h src/Textures/TextureCoord.cpp src/Textures/TextureCoord.h
 		src/InputType/FigureType.cpp
@@ -39,12 +39,12 @@ set(engine_sources
 		src/ConfigReaders/LightReader.h
 		src/ObjectCreation/LightCreator.cpp
 		src/ObjectCreation/LightCreator.h
-		src/LSystems/Strategy/LSystemStrat.cpp
-		src/LSystems/Strategy/LSystemStrat.h
-		src/LSystems/Strategy/LStrat2D.cpp
-		src/LSystems/Strategy/LStrat2D.h
-		src/LSystems/Strategy/LStrat3D.cpp
-		src/LSystems/Strategy/LStrat3D.h
+		src/LSystems/Adapter/LSystemAdapt.cpp
+		src/LSystems/Adapter/LSystemAdapt.h
+		src/LSystems/Adapter/L2DAdapt.cpp
+		src/LSystems/Adapter/L2DAdapt.h
+		src/LSystems/Adapter/L3DAdapt.cpp
+		src/LSystems/Adapter/L3DAdapt.h
 )
 
 ############################################################

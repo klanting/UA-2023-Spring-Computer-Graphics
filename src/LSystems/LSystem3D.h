@@ -4,13 +4,13 @@
 
 #ifndef ENGINE_LSYSTEM3D_H
 #define ENGINE_LSYSTEM3D_H
-#include "l_parser.h"
+#include "../../libraries/l_parser.h"
 #include <string>
 #include <list>
 #include <vector>
 #include "../../libraries/easy_image.h"
 #include "../../libraries/ini_configuration.h"
-#include "l_parser.h"
+#include "../../libraries/l_parser.h"
 #include "stack"
 #include "../2DProjection/tools2D.h"
 #include "../../libraries/vector3d.h"

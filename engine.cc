@@ -1,6 +1,6 @@
 #include "libraries/easy_image.h"
 #include "libraries/ini_configuration.h"
-#include "src/LSystems/l_parser.h"
+#include "libraries/l_parser.h"
 
 #include <fstream>
 #include <iostream>
@@ -42,7 +42,7 @@ Figure* ReadObject2(const obj::OBJFile& ob){
     mtl_file >> mtl;
     mtl_file.close();
 
-    TextureCoord* t = new TextureCoord();
+    auto t = new TextureCoord();
 
     obj::Material s = mtl["colorrect"];
     string ambient_map = s["map_Ka"].as_string_or_default("none");
@@ -106,8 +106,6 @@ Figure* ReadObject2(const obj::OBJFile& ob){
         v_normaal.push_back(temp_normaal);
     }
 
-
-
     Figure* f = new Figure(points, indexes, uv, v_normaal, Color(255, 0, 0));
     f->texture_coord = true;
     f->texture_co = t;
@@ -131,7 +129,7 @@ CubeMap* ReadObject(const obj::MTLLibrary& mtl, double max){
     ambient_file.close();
 
 
-    CubeMap* c_map = new CubeMap(max);
+    auto* c_map = new CubeMap(max);
     c_map->ambient_img = ambient_img;
 
     return c_map;
@@ -313,7 +311,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
         }
         /**
-         * projectie hier
+         * projection occurs here
          * */
 
         for (Figure* f: figures) {
@@ -329,7 +327,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
             }
         }
 
-        EyePerspective* eye_position = new EyePerspective{eye};
+        auto* eye_position = new EyePerspective{eye};
         for (Figure* f: figures){
 
             f->setEye(eye_position);

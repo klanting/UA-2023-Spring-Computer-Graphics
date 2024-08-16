@@ -154,6 +154,6 @@ void LSystem3D::l_fill(const string &s) {
 }
 
 Figure *LSystem3D::get_fig() {
-    Figure* fig = new Figure(points, lines, c);
+    auto* fig = new Figure(points, lines, c);
     return fig;
 }
