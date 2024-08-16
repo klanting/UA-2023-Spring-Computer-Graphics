@@ -21,7 +21,7 @@
 #include <math.h>
 #include <iostream>
 #include <sstream>
-#include "Z_buffer.h"
+#include "../src/2DProjection/Z_buffer.h"
 
 #ifndef le32toh
 #define le32toh(x) (x)

@@ -5,7 +5,7 @@
 #ifndef ENGINE_BODIES3D_H
 #define ENGINE_BODIES3D_H
 #include "../Figure/Figure.h"
-#include "../Figure/vector3d.h"
+#include "../../libraries/vector3d.h"
 
 #include "../ConfigReaders/FigureReader.h"
 

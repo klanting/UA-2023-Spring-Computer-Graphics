@@ -1,13 +1,13 @@
 
 
-#include "easy_image.h"
+#include "../../libraries/easy_image.h"
 #include "../Figure/Line2D.h"
 #include <list>
 #include <string>
 #include <iostream>
 #include <vector>
 #include "../Figure/Face.h"
-#include "../Figure/vector3d.h"
+#include "../../libraries/vector3d.h"
 #include "../Figure/Figure.h"
 #include "BufferStorage.h"
 

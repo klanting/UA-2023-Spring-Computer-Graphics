@@ -20,7 +20,7 @@
 #include <stdint.h>
 #include <vector>
 #include <iostream>
-#include "Z_buffer.h"
+#include "../src/2DProjection/Z_buffer.h"
 /**
  * \brief The namespace of the EasyImage class
  */

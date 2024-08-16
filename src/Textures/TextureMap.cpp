@@ -5,7 +5,7 @@
 #include "TextureMap.h"
 #include "cmath"
 #include <algorithm>
-#include "../2DProjection/easy_image.h"
+#include "../../libraries/easy_image.h"
 unsigned int TextureMap::get_byte() {
     char data = '\000';
     stream.get(data);

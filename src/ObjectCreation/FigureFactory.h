@@ -5,7 +5,7 @@
 #include "Bodies3D.h"
 #include "../InputType/FigureType.h"
 #include "../Figure/Color.h"
-#include "../Configuration/ini_configuration.h"
+#include "../../libraries/ini_configuration.h"
 #include "../ConfigReaders/FigureReader.h"
 
 class FigureFactory {

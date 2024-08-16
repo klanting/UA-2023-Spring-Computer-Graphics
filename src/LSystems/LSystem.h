@@ -9,8 +9,8 @@
 #include "../Figure/Line2D.h"
 #include <list>
 #include <vector>
-#include "../2DProjection/easy_image.h"
-#include "../Configuration/ini_configuration.h"
+#include "../../libraries/easy_image.h"
+#include "../../libraries/ini_configuration.h"
 #include "l_parser.h"
 #include "stack"
 using namespace std;

@@ -1,7 +1,7 @@
 
 
 #include "tools2D.h"
-#include "easy_image.h"
+#include "../../libraries/easy_image.h"
 #include "../Figure/Line2D.h"
 #include "../Figure/Color.h"
 #include <list>

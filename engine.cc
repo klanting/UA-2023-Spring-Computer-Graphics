@@ -1,5 +1,5 @@
-#include "src/2DProjection/easy_image.h"
-#include "src/Configuration/ini_configuration.h"
+#include "libraries/easy_image.h"
+#include "libraries/ini_configuration.h"
 #include "src/LSystems/l_parser.h"
 
 #include <fstream>
@@ -12,7 +12,7 @@
 #include "src/Figure/Color.h"
 #include "src/2DProjection/tools2D.h"
 #include "src/LSystems/LSystem.h"
-#include "src/Figure/vector3d.h"
+#include "libraries/vector3d.h"
 #include "src/Figure/Figure.h"
 #include "src/ObjectCreation/Bodies3D.h"
 #include <cmath>

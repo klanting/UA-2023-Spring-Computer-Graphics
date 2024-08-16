@@ -5,9 +5,9 @@
 #ifndef ENGINE_CONFIGREADER_H
 #define ENGINE_CONFIGREADER_H
 
-#include "../Configuration/ini_configuration.h"
+#include "../../libraries/ini_configuration.h"
 #include "../Figure/Color.h"
-#include "../Figure/vector3d.h"
+#include "../../libraries/vector3d.h"
 #include <optional>
 
 namespace ini {

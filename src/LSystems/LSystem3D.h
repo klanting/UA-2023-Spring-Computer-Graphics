@@ -8,12 +8,12 @@
 #include <string>
 #include <list>
 #include <vector>
-#include "../2DProjection/easy_image.h"
-#include "../Configuration/ini_configuration.h"
+#include "../../libraries/easy_image.h"
+#include "../../libraries/ini_configuration.h"
 #include "l_parser.h"
 #include "stack"
 #include "../2DProjection/tools2D.h"
-#include "../Figure/vector3d.h"
+#include "../../libraries/vector3d.h"
 #include "../Figure/Figure.h"
 
 class LSystem3D {

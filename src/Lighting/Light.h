@@ -5,7 +5,7 @@
 #ifndef ENGINE_LIGHT_H
 #define ENGINE_LIGHT_H
 #include "../Figure/Color.h"
-#include "../Figure/vector3d.h"
+#include "../../libraries/vector3d.h"
 #include "ShadowMask.h"
 
 struct LightColors{

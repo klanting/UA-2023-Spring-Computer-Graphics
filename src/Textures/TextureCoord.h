@@ -4,10 +4,10 @@
 
 #ifndef ENGINE_TEXTURECOORD_H
 #define ENGINE_TEXTURECOORD_H
-#include "../Figure/vector3d.h"
+#include "../../libraries/vector3d.h"
 #include <vector>
 #include "../Figure/Color.h"
-#include "../2DProjection/easy_image.h"
+#include "../../libraries/easy_image.h"
 #include <map>
 using namespace std;
 

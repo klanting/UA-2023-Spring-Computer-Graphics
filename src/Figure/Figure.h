@@ -6,10 +6,10 @@
 #define ENGINE_FIGURE_H
 
 #include <vector>
-#include "vector3d.h"
+#include "../../libraries/vector3d.h"
 #include "Face.h"
 #include "Color.h"
-#include "../2DProjection/easy_image.h"
+#include "../../libraries/easy_image.h"
 #include "Line2D.h"
 #include "list"
 #include "../Lighting/Light.h"

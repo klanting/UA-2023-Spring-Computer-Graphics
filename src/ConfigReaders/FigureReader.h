@@ -4,7 +4,7 @@
 
 #ifndef ENGINE_FIGUREREADER_H
 #define ENGINE_FIGUREREADER_H
-#include "../Configuration/ini_configuration.h"
+#include "../../libraries/ini_configuration.h"
 #include <string>
 #include "../Figure/Color.h"
 #include "ConfigReader.h"
