@@ -4,6 +4,6 @@
 
 #include "L2DAdapt.h"
 
-L2DAdapt::L2DAdapt(const std::string &input_file) : LSystemAdapt(input_file) {
+L2DAdapt::L2DAdapt(const std::string &inputFile, const Color &c) : LSystemAdapt(inputFile, c) {
 
 }

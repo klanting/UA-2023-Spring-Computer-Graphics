@@ -2,16 +2,16 @@
 // Created by tibov on 24/03/23.
 //
 
-#ifndef ENGINE_Z_BUFFER_H
-#define ENGINE_Z_BUFFER_H
+#ifndef ENGINE_ZBUFFER_H
+#define ENGINE_ZBUFFER_H
 
 
-class Z_buffer {
+class ZBuffer {
 public:
-    Z_buffer(unsigned int width, unsigned int height);
+    ZBuffer(unsigned int width, unsigned int height);
     double get(unsigned int y, unsigned int x);
     void set(unsigned int y, unsigned int x, double val);
-    ~Z_buffer();
+    ~ZBuffer();
 
 private:
     unsigned int width;
@@ -23,4 +23,4 @@ private:
 };
 
 
-#endif //ENGINE_Z_BUFFER_H
+#endif //ENGINE_ZBUFFER_H

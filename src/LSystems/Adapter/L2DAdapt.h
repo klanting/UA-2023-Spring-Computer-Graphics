@@ -9,7 +9,7 @@
 
 class L2DAdapt: public LSystemAdapt<LParser::LSystem2D> {
 public:
-    L2DAdapt(const std::string& input_file);
+    explicit L2DAdapt(const std::string& inputFile, const Color &c);
 private:
 };
 

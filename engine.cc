@@ -21,7 +21,7 @@
 #include "src/Lighting/LightTools.h"
 #include "src/Lighting/ShadowMask.h"
 
-#include "src/Configuration/obj_parser.h"
+#include "libraries/obj_parser.h"
 #include "src/CubeMapping/CubeMap.h"
 #include "src/Textures/TextureCoord.h"
 #include "src/InputType/FigureType.h"

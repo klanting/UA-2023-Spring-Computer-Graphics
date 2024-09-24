@@ -20,7 +20,7 @@
 #include <stdint.h>
 #include <vector>
 #include <iostream>
-#include "../src/2DProjection/Z_buffer.h"
+#include "../src/2DProjection/ZBuffer.h"
 /**
  * \brief The namespace of the EasyImage class
  */
@@ -220,7 +220,7 @@ namespace img
 			 * 	assert(y1 < getHeight())
 			 */
 			void draw_line(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, Color color);
-        void draw_line_zbuf(unsigned int x0, unsigned int y0, double z0, unsigned int x1, unsigned int y1, double z1, Color color, Z_buffer &z_buf);
+        void draw_line_zbuf(unsigned int x0, unsigned int y0, double z0, unsigned int x1, unsigned int y1, double z1, Color color, ZBuffer &z_buf);
 
 		private:
 			friend std::istream& operator>>(std::istream& in, EasyImage & image);

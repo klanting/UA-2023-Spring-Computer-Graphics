@@ -11,7 +11,7 @@ namespace Clipping{
 
         double dval = -dNear;
 
-        for (auto face: figure->faces){
+        for (const auto& face: figure->faces){
 
             pair<vector<Vector3D>, vector<Vector3D>> side_pair = CheckSide(figure, face, dval, "near", dNear);
             Cut(side_pair, "near", dval, dNear, new_faces, new_points);
@@ -28,7 +28,7 @@ namespace Clipping{
 
         double dval = -dFar;
 
-        for (auto face: figure->faces){
+        for (const auto& face: figure->faces){
 
             pair<vector<Vector3D>, vector<Vector3D>> side_pair = CheckSide(figure, face, dval, "far", dFar);
             Cut(side_pair, "far", dval, dFar, new_faces, new_points);
@@ -44,7 +44,7 @@ namespace Clipping{
 
         double dval = dRight;
 
-        for (auto face: figure->faces){
+        for (const auto& face: figure->faces){
             pair<vector<Vector3D>, vector<Vector3D>> side_pair = CheckSide(figure, face, dval, "right", dNear);
             Cut(side_pair, "right", dval, dNear, new_faces, new_points);
         }
@@ -60,7 +60,7 @@ namespace Clipping{
 
         double dval = dLeft;
 
-        for (auto face: figure->faces){
+        for (const auto& face: figure->faces){
             pair<vector<Vector3D>, vector<Vector3D>> side_pair = CheckSide(figure, face, dval, "left", dNear);
             Cut(side_pair, "left", dval, dNear, new_faces, new_points);
 
@@ -103,7 +103,7 @@ namespace Clipping{
 
         double dval = dBottom;
 
-        for (auto face: figure->faces){
+        for (const auto& face: figure->faces){
             pair<vector<Vector3D>, vector<Vector3D>> side_pair = CheckSide(figure, face, dval, "bottom", dNear);
             Cut(side_pair, "top", dval, dNear, new_faces, new_points);
 

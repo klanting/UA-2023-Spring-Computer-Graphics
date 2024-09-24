@@ -4,6 +4,6 @@
 
 #include "L3DAdapt.h"
 
-L3DAdapt::L3DAdapt(const std::string &input_file) : LSystemAdapt(input_file) {
+L3DAdapt::L3DAdapt(const std::string &inputFile, const Color &c) : LSystemAdapt(inputFile, c) {
 
 }

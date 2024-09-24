@@ -35,7 +35,7 @@ namespace tool2D{
 
     void doFigureProjection(Figure* figure, double d, const pair<double, double>& deviation);
     void determineFaceData(Figure* figure, double d, bool determine_normal);
-    void faceZBufferingFilling(Figure* figure, Z_buffer& z_buf, BufferStorage& buf_store);
+    void faceZBufferingFilling(Figure* figure, ZBuffer& z_buf, BufferStorage& buf_store);
 
 
 }

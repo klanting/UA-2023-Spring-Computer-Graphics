@@ -21,7 +21,7 @@
 #include <math.h>
 #include <iostream>
 #include <sstream>
-#include "../src/2DProjection/Z_buffer.h"
+#include "../src/2DProjection/ZBuffer.h"
 
 #ifndef le32toh
 #define le32toh(x) (x)
@@ -265,7 +265,7 @@ void img::EasyImage::draw_line(unsigned int x0, unsigned int y0, unsigned int x1
 }
 
 
-void img::EasyImage::draw_line_zbuf(unsigned int x0, unsigned int y0, double z0, unsigned int x1, unsigned int y1, double z1, Color color, Z_buffer &z_buf)
+void img::EasyImage::draw_line_zbuf(unsigned int x0, unsigned int y0, double z0, unsigned int x1, unsigned int y1, double z1, Color color, ZBuffer &z_buf)
 {
     if (x0 >= this->width || y0 >= this->height || x1 >= this->width || y1 > this->height) {
         std::stringstream ss;

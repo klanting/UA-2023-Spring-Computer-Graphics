@@ -8,7 +8,7 @@
 
 class L3DAdapt: public LSystemAdapt<LParser::LSystem3D>{
 public:
-    L3DAdapt(const std::string& input_file);
+    explicit L3DAdapt(const std::string& inputFile, const Color &c);
 private:
 };
 

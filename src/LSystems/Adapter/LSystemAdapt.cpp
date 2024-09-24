@@ -10,8 +10,8 @@ template class LSystemAdapt<LParser::LSystem2D>;
 template class LSystemAdapt<LParser::LSystem3D>;
 
 template<typename T>
-LSystemAdapt<T>::LSystemAdapt(const std::string &input_file) {
-    std::ifstream input_stream(input_file);
-    input_stream >> l_system;
+LSystemAdapt<T>::LSystemAdapt(const std::string &inputFile, const Color &c): color{c} {
+    std::ifstream input_stream(inputFile);
+    input_stream >> lSystem;
     input_stream.close();
 }

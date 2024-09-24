@@ -10,7 +10,7 @@
 #include <cmath>
 #include <limits>
 #include "../Figure/Figure.h"
-#include "Z_buffer.h"
+#include "ZBuffer.h"
 #include <tuple>
 #include "BufferStorage.h"
 #include <set>
@@ -40,7 +40,7 @@ namespace tool2D{
         image.clear(easy_bc);
 
         if (do_z_buf){
-            Z_buffer z_buf((unsigned int) image_size.first, (unsigned int) image_size.second);
+            ZBuffer z_buf((unsigned int) image_size.first, (unsigned int) image_size.second);
             for (Line2D* line: lines){
                 img::Color easy_c(lround(line->color.getRed()*255), lround(line->color.getGreen()*255), lround(line->color.getBlue()*255));
                 image.draw_line_zbuf(::lround(line->p1.x), ::lround(line->p1.y), line->z1, ::lround(line->p2.x), ::lround(line->p2.y), line->z2, easy_c, z_buf);
@@ -264,7 +264,7 @@ namespace tool2D{
         }
     }
 
-    void faceZBufferingFilling(Figure* figure, Z_buffer& z_buf, BufferStorage& buf_store){
+    void faceZBufferingFilling(Figure* figure, ZBuffer& z_buf, BufferStorage& buf_store){
         int face_counter = 0;
         for (auto face: figure->faces){
             Vector3D A = figure->points[face.points[0]];
@@ -330,7 +330,7 @@ namespace tool2D{
 
     img::EasyImage draw2DTriangle(const vector<Figure*> &figures, const Color &bc, double d, pair<double, double> deviation, const  pair<unsigned int, unsigned int>& image_size, const vector<Light*>& lights){
         img::EasyImage image(image_size.first, image_size.second);
-        Z_buffer z_buf(image_size.first, image_size.second);
+        ZBuffer z_buf(image_size.first, image_size.second);
         BufferStorage buf_store(image_size.first, image_size.second);
         img::Color easy_bc(lround(bc.getRed()*255), lround(bc.getGreen()*255), lround(bc.getBlue()*255));
         image.clear(easy_bc);

@@ -7,14 +7,17 @@
 
 #include "string"
 #include "../../../libraries/l_parser.h"
+#include "../../Figure/Color.h"
+
 template <typename T>
 class LSystemAdapt {
 
 
 protected:
-    LSystemAdapt(const std::string& input_file);
+    explicit LSystemAdapt(const std::string& inputFile, const Color &c);
 
-    T l_system;
+    T lSystem;
+    Color color{};
 
 
 };
