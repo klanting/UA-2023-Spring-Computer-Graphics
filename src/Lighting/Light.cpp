@@ -8,8 +8,7 @@
 #include <tuple>
 #include "../Figure/Figure.h"
 #include "../2DProjection/tools2D.h"
-Light::Light() {
-
+Light::Light(LightColors lightColors, bool infinity): lightColors{lightColors}, infinity{infinity} {
 }
 
 void Light::EyePerspectifTransform(const Vector3D &eye_cords) {
@@ -221,20 +220,19 @@ bool Light::same(const Vector3D &normal_point) {
 
 }
 
-
-void Light::setLightColors(const LightColors &lightColors) {
-    light_colors = lightColors;
-}
-
 Color Light::getAmbient() const {
-    return light_colors.ambient;
+    return lightColors.ambient;
 }
 
 Color Light::getDiffuse() const {
-    return light_colors.diffuse;
+    return lightColors.diffuse;
 }
 
 Color Light::getSpectral() const {
-    return light_colors.specular;
+    return lightColors.specular;
+}
+
+bool Light::isInfinity() const {
+    return infinity;
 }
 

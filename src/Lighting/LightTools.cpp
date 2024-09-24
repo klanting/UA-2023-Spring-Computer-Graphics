@@ -10,9 +10,9 @@ namespace LightTools {
         double green = 0;
         double blue = 0;
         for (auto l: lights){
-            red += l->getAmbient().red;
-            green += l->getAmbient().green;
-            blue += l->getAmbient().blue;
+            red += l->getAmbient().getRed();
+            green += l->getAmbient().getGreen();
+            blue += l->getAmbient().getBlue();
         }
 
         return Color(red, green, blue);
@@ -26,9 +26,9 @@ namespace LightTools {
             Light* l = lights[i];
 
             if (angles[i] > 0){
-                red += l->getDiffuse().red*angles[i];
-                green += l->getDiffuse().green*angles[i];
-                blue += l->getDiffuse().blue*angles[i];
+                red += l->getDiffuse().getRed()*angles[i];
+                green += l->getDiffuse().getGreen()*angles[i];
+                blue += l->getDiffuse().getBlue()*angles[i];
             }
 
         }
@@ -49,9 +49,9 @@ namespace LightTools {
 
             double intensity = getIntensity(l, angles[i]);
             if (angles[i] >= l->spot_angle){
-                red += l->getDiffuse().red*intensity;
-                green += l->getDiffuse().green*intensity;
-                blue += l->getDiffuse().blue*intensity;
+                red += l->getDiffuse().getRed()*intensity;
+                green += l->getDiffuse().getGreen()*intensity;
+                blue += l->getDiffuse().getBlue()*intensity;
             }
 
         }
@@ -66,9 +66,9 @@ namespace LightTools {
         for (int i = 0; i < lights.size(); i++){
             Light* l = lights[i];
             if (angles[i] > 0){
-                red += l->getSpectral().red*pow(angles[i], reflectie_index);
-                green += l->getSpectral().green*pow(angles[i], reflectie_index);
-                blue += l->getSpectral().blue*pow(angles[i], reflectie_index);
+                red += l->getSpectral().getRed()*pow(angles[i], reflectie_index);
+                green += l->getSpectral().getGreen()*pow(angles[i], reflectie_index);
+                blue += l->getSpectral().getBlue()*pow(angles[i], reflectie_index);
             }
 
         }
@@ -95,7 +95,7 @@ namespace LightTools {
 
             double angle;
             Vector3D r;
-            if (l->inf){
+            if (l->isInfinity()){
                 angle = l->direction.x*-1*normaal.x+l->direction.y*-1*normaal.y+l->direction.z*-1*normaal.z;
 
 
@@ -126,8 +126,8 @@ namespace LightTools {
         }
         Color result = SumDifuus(lights, angles);
         Color result_spiegeld = SumSpecular(lights, anglesbeta, reflectie_index);
-        return Color(result.red*difuus_ref.red+result_spiegeld.red*specular_ref.red,
-                     result.green*difuus_ref.green+result_spiegeld.green*specular_ref.green,
-                     result.blue*difuus_ref.blue+result_spiegeld.blue*specular_ref.blue);
+        return Color(result.getRed()*difuus_ref.getRed()+result_spiegeld.getRed()*specular_ref.getRed(),
+                     result.getGreen()*difuus_ref.getGreen()+result_spiegeld.getGreen()*specular_ref.getGreen(),
+                     result.getBlue()*difuus_ref.getBlue()+result_spiegeld.getBlue()*specular_ref.getBlue());
     }
 };

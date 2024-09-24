@@ -18,3 +18,15 @@ void Color::multiply(const Color &c) {
     green = std::min(green, 1.0);
     blue = std::min(blue, 1.0);
 }
+
+double Color::getRed() const {
+    return red;
+}
+
+double Color::getGreen() const {
+    return green;
+}
+
+double Color::getBlue() const {
+    return blue;
+}

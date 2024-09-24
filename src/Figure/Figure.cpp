@@ -258,7 +258,7 @@ void Figure::DifuusLichtInf(const vector<Light *> &lights) {
 
         Color difuus_color = reflections.diffuse_color;
 
-        face.difuus_inf = Color(result.red*difuus_color.red, result.green*difuus_color.green, result.blue*difuus_color.blue);
+        face.difuus_inf = Color(result.getRed()*difuus_color.getRed(), result.getGreen()*difuus_color.getGreen(), result.getBlue()*difuus_color.getBlue());
 
     }
 }

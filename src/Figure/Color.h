@@ -10,6 +10,15 @@ class Color {
 public:
     explicit Color(double r, double g, double b);
     void multiply(const Color& c);
+
+    [[nodiscard]] double getRed() const;
+
+    [[nodiscard]]double getGreen() const;
+
+    [[nodiscard]] double getBlue() const;
+
+
+private:
     double red;
     double green;
     double blue;

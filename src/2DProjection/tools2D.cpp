@@ -34,7 +34,7 @@ namespace tool2D{
 
         img::EasyImage image(lround(image_size.first), lround(image_size.second));
 
-        img::Color easy_bc(lround(bc.red*255), lround(bc.green*255), lround(bc.blue*255));
+        img::Color easy_bc(lround(bc.getRed()*255), lround(bc.getGreen()*255), lround(bc.getBlue()*255));
 
 
         image.clear(easy_bc);
@@ -42,12 +42,12 @@ namespace tool2D{
         if (do_z_buf){
             Z_buffer z_buf((unsigned int) image_size.first, (unsigned int) image_size.second);
             for (Line2D* line: lines){
-                img::Color easy_c(lround(line->color.red*255), lround(line->color.green*255), lround(line->color.blue*255));
+                img::Color easy_c(lround(line->color.getRed()*255), lround(line->color.getGreen()*255), lround(line->color.getBlue()*255));
                 image.draw_line_zbuf(::lround(line->p1.x), ::lround(line->p1.y), line->z1, ::lround(line->p2.x), ::lround(line->p2.y), line->z2, easy_c, z_buf);
             }
         }else{
             for (Line2D* line: lines){
-                img::Color easy_c(lround(line->color.red*255), lround(line->color.green*255), lround(line->color.blue*255));
+                img::Color easy_c(lround(line->color.getRed()*255), lround(line->color.getGreen()*255), lround(line->color.getBlue()*255));
                 image.draw_line(::lround(line->p1.x), ::lround(line->p1.y), ::lround(line->p2.x), ::lround(line->p2.y), easy_c);
             }
         }
@@ -332,7 +332,7 @@ namespace tool2D{
         img::EasyImage image(image_size.first, image_size.second);
         Z_buffer z_buf(image_size.first, image_size.second);
         BufferStorage buf_store(image_size.first, image_size.second);
-        img::Color easy_bc(lround(bc.red*255), lround(bc.green*255), lround(bc.blue*255));
+        img::Color easy_bc(lround(bc.getRed()*255), lround(bc.getGreen()*255), lround(bc.getBlue()*255));
         image.clear(easy_bc);
         for (auto& figure: figures){
             determineFaceData(figure, d, true);
@@ -421,9 +421,9 @@ namespace tool2D{
                                                                          original_point_eye,
                                                                          figure->reflections.diffuse_color, figure->reflections.spectral_color, figure->reflections.reflection_index);
 
-                double red = figure->ambient_color.red + face.difuus_inf.red + diffusSpec_color.red;
-                double green = figure->ambient_color.green + face.difuus_inf.green + diffusSpec_color.green;
-                double blue = figure->ambient_color.blue + face.difuus_inf.blue + diffusSpec_color.blue;
+                double red = figure->ambient_color.getRed() + face.difuus_inf.getRed() + diffusSpec_color.getRed();
+                double green = figure->ambient_color.getGreen() + face.difuus_inf.getGreen() + diffusSpec_color.getGreen();
+                double blue = figure->ambient_color.getBlue() + face.difuus_inf.getBlue() + diffusSpec_color.getBlue();
 
                 if (red > 1){
                     red = 1;
@@ -438,7 +438,7 @@ namespace tool2D{
                 }
                 Color result_color = Color(red,green,blue);
 
-                img::Color c(lround(result_color.red * 255), lround(result_color.green * 255), lround(result_color.blue * 255));
+                img::Color c(lround(result_color.getRed() * 255), lround(result_color.getGreen() * 255), lround(result_color.getBlue() * 255));
                 image(x_i , y_i) = c;
             }
         }
