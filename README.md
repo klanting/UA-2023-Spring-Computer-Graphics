@@ -1,3 +1,7 @@
+# Computer Graphics
+
+[![CodeFactor](https://www.codefactor.io/repository/github/klanting/ua-2023-spring-computer-graphics/badge)](https://www.codefactor.io/repository/github/klanting/ua-2023-spring-computer-graphics)
+
 ## Gequoteerde functionaliteit
 
 V: Werkend  
