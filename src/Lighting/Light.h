@@ -17,7 +17,7 @@ struct LightColors{
 class Figure;
 class Light {
 public:
-    explicit Light(LightColors lightColors, bool infinity=false);
+    explicit Light(LightColors lightColors);
 
     Vector3D direction = Vector3D::point(0, 0, 0);
     Vector3D location = Vector3D::point(0, 0, 0);
@@ -45,10 +45,9 @@ public:
     [[nodiscard]] Color getDiffuse() const;
     [[nodiscard]] Color getSpectral() const;
 
-    [[nodiscard]] bool isInfinity() const;
+    [[nodiscard]] virtual bool isInfinity() const = 0;
 
 private:
-    bool infinity;
 
     LightColors lightColors;
 

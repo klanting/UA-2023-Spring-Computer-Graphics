@@ -31,6 +31,8 @@
 #include "src/ConfigReaders/LightReader.h"
 #include "src/ObjectCreation/LightCreator.h"
 
+#include "src/LSystems/Adapter/L2DAdapt.h"
+#include "src/LSystems/Adapter/L3DAdapt.h"
 
 using namespace std;
 using Lines2D = list<Line2D*>;
@@ -162,6 +164,8 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
         string input_file = cr.getString("inputfile");
         Color c = cr.getColor("color");
         bool do_random = cr.getBool("stochastic");
+
+        L2DAdapt lSystemAdapt(input_file, c);
 
         LParser::LSystem2D l_system;
         l_system.SetRandom(do_random);

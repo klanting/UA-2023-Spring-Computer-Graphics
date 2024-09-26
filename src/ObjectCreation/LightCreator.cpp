@@ -4,17 +4,19 @@
 
 #include "LightCreator.h"
 
+
 Light *LightCreator::create(const ini::LightReader &lr, bool shadow_support, int shadow_size) {
     LightColors colors = lr.getLightColors();
 
     Light* l = nullptr;
     if (lr.isDiffuseInf()){
-        l = new Light(colors, true);
+        l = new LightInfinite(colors);
+
 
         l->direction = lr.getPoint("direction");
 
     }else{
-        l = new Light(colors, false);
+        l = new LightPosition(colors);
 
         double spot_angle = lr.getDouble("spotAngle", 90);
         l->spot_angle = cos(spot_angle*M_PI/180.0);

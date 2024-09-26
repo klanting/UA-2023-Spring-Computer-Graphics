@@ -6,7 +6,8 @@
 #define ENGINE_LIGHTCREATOR_H
 
 
-#include "../Lighting/Light.h"
+#include "../Lighting/LightInfinite.h"
+#include "../Lighting/LightPosition.h"
 #include "../ConfigReaders/LightReader.h"
 
 class LightCreator {

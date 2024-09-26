@@ -45,6 +45,10 @@ set(engine_sources
 		src/LSystems/Adapter/L2DAdapt.h
 		src/LSystems/Adapter/L3DAdapt.cpp
 		src/LSystems/Adapter/L3DAdapt.h
+		src/Lighting/LightInfinite.cpp
+		src/Lighting/LightInfinite.h
+		src/Lighting/LightPosition.cpp
+		src/Lighting/LightPosition.h
 )
 
 ############################################################
