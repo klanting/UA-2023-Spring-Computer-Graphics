@@ -11,12 +11,13 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${OWN_GXX_FLAGS}")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${OWN_GXX_FLAGS}")
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${OWN_GXX_FLAGS}")
 
+
 ############################################################
 # List all sources
 ############################################################
 set(engine_sources
         libraries/easy_image.cc
-	engine.cc
+		engine.cc
 		libraries/ini_configuration.cc
 		libraries/ini_configuration.h
 		libraries/l_parser.cc
@@ -49,6 +50,37 @@ set(engine_sources
 		src/Lighting/LightInfinite.h
 		src/Lighting/LightPosition.cpp
 		src/Lighting/LightPosition.h
+		testing/EngineTests.cpp
+)
+
+#support google tests
+include_directories(.)
+#Google Test Setup
+include(FetchContent)
+include(GoogleTest)
+FetchContent_Declare(
+		googletest
+		URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+
+FetchContent_MakeAvailable(googletest)
+enable_testing()
+
+set(TestCaseFiles
+		testing/EngineTests.cpp
+		testing/test-main.cpp
+
+)
+
+add_executable(SnapShotMaker testing/SnapshotMaker.cpp)
+
+add_executable(TESTS
+		${TestCaseFiles}
+)
+
+target_link_libraries(
+		TESTS
+		GTest::gtest_main
 )
 
 ############################################################
