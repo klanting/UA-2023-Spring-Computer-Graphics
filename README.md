@@ -1,6 +1,6 @@
 # Computer Graphics
 
-[![CodeFactor](https://www.codefactor.io/repository/github/klanting/ua-2023-spring-computer-graphics/badge)](https://www.codefactor.io/repository/github/klanting/ua-2023-spring-computer-graphics)
+[![CodeFactor](https://www.codefactor.io/repository/github/klanting/ua-2023-spring-computer-graphics/badge)](https://www.codefactor.io/repository/github/klanting/ua-2023-spring-computer-graphics)[![Codacy Badge](https://app.codacy.com/project/badge/Grade/8b06cd245c4d47e0940dd264d78df07b)](https://app.codacy.com/gh/klanting/UA-2023-Spring-Computer-Graphics/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 ## Supporting Features
 
