@@ -50,7 +50,6 @@ set(engine_sources
 		src/Lighting/LightInfinite.h
 		src/Lighting/LightPosition.cpp
 		src/Lighting/LightPosition.h
-		testing/EngineTests.cpp
 )
 
 #support google tests
