@@ -403,9 +403,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 
         return image;
 
-
     }
-
 
 	return img::EasyImage();
 }

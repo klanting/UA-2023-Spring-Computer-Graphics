@@ -278,7 +278,7 @@ namespace Bodies3D{
         return fig;
     }
 
-    Figure* CreateMobiusband(const Color &c, int n, int m){
+    Figure* CreateMobiusStrip(const Color &c, int n, int m){
         vector<Vector3D> points;
         vector<vector<int>> faces;
         for (int i = 0; i<n; i++){
@@ -316,7 +316,7 @@ namespace Bodies3D{
         return fig;
     }
 
-    Figure* CreateTorusUmbilic(const Color &c, int n, int m){
+    Figure* CreateUmbilical(const Color &c, int n, int m){
         vector<Vector3D> points;
         vector<vector<int>> faces;
         for (int i = 0; i<n; i++){

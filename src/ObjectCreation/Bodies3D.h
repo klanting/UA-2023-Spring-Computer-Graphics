@@ -20,8 +20,8 @@ namespace Bodies3D{
     Figure* CreateSphere(const Color &c, int n);
     Figure* CreateTorus(const Color &c, int n, int m, double r, double R);
     Figure* CreateTetrahedron(const Color &c);
-    Figure* CreateMobiusband(const Color &c, int n, int m);
-    Figure* CreateTorusUmbilic(const Color &c, int n, int m);
+    Figure* CreateMobiusStrip(const Color &c, int n, int m);
+    Figure* CreateUmbilical(const Color &c, int n, int m);
     void generateFractal(Figure* fig, vector<Figure*>& fractal_output, int nr_iterations, double scale, double original_scale, const string& type);
     Figure* CreateBuckyBall(const Color &c);
     Figure* CreateMengerSponge(const Color &c);

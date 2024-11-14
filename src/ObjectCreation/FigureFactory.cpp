@@ -101,13 +101,13 @@ Figure *FigureFactory::create3DLSystem(const ini::FigureReader& sr) {
 Figure *FigureFactory::createMobius(const ini::FigureReader& sr) {
     int n = sr.getInt("n");
     int m = sr.getInt("m");
-    return Bodies3D::CreateMobiusband(sr.getFigureColor(), n, m);
+    return Bodies3D::CreateMobiusStrip(sr.getFigureColor(), n, m);
 }
 
 Figure *FigureFactory::createTorusBelly(const ini::FigureReader& sr) {
     int n = sr.getInt("n");
     int m = sr.getInt("m");
-    return Bodies3D::CreateTorusUmbilic(sr.getFigureColor(), n, m);
+    return Bodies3D::CreateUmbilical(sr.getFigureColor(), n, m);
 }
 
 Figure *FigureFactory::createBuckyBall(const ini::FigureReader& sr) {
