@@ -29,7 +29,6 @@ namespace Clipping{
         double dval = -dFar;
 
         for (const auto& face: figure->faces){
-
             pair<vector<Vector3D>, vector<Vector3D>> side_pair = CheckSide(figure, face, dval, "far", dFar);
             Cut(side_pair, "far", dval, dFar, new_faces, new_points);
         }
@@ -51,7 +50,6 @@ namespace Clipping{
 
         figure->faces = new_faces;
         figure->points = new_points;
-
     }
 
     void clipLeft(Figure* figure, double dNear, double dLeft){
@@ -68,7 +66,6 @@ namespace Clipping{
 
         figure->faces = new_faces;
         figure->points = new_points;
-
     }
 
     void clipTop(Figure* figure, double dNear, double dTop){
@@ -89,7 +86,6 @@ namespace Clipping{
 
             pair<vector<Vector3D>, vector<Vector3D>> side_pair = CheckSide(figure, face, dval, "top", dNear);
             Cut(side_pair, "top", dval, dNear, new_faces, new_points);
-
         }
 
         figure->faces = new_faces;
@@ -106,7 +102,6 @@ namespace Clipping{
         for (const auto& face: figure->faces){
             pair<vector<Vector3D>, vector<Vector3D>> side_pair = CheckSide(figure, face, dval, "bottom", dNear);
             Cut(side_pair, "top", dval, dNear, new_faces, new_points);
-
         }
 
         figure->faces = new_faces;
@@ -146,8 +141,6 @@ namespace Clipping{
             }else{
                 inside.push_back(current_point);
             }
-
-
         }
 
         return make_pair(outside, inside);
@@ -171,15 +164,15 @@ namespace Clipping{
         vector<Vector3D> outside = value_pair.first;
         vector<Vector3D> inside = value_pair.second;
 
-        if (outside.size() == 0){
+        if (outside.empty()){
             new_points.push_back(inside[0]);
             new_points.push_back(inside[1]);
             new_points.push_back(inside[2]);
             new_faces.push_back(Face({(int) new_points.size()-3, (int) new_points.size()-2, (int) new_points.size()-1}));
         }else if (outside.size() == 1){
-            Vector3D outside_point = outside[0];
-            Vector3D inside_point1 = inside[0];
-            Vector3D inside_point2 = inside[1];
+            const Vector3D& outside_point = outside[0];
+            const Vector3D& inside_point1 = inside[0];
+            const Vector3D& inside_point2 = inside[1];
             double p = CalculateP(dval, inside_point1, outside_point, type, dNear);
             Vector3D new_point_1 = Vector3D::point(p*outside_point+(1-p)*inside_point1);
             p = CalculateP(dval, inside_point2, outside_point, type, dNear);
@@ -193,9 +186,9 @@ namespace Clipping{
             new_faces.push_back(Face({(int) new_points.size()-4, (int) new_points.size()-3, (int) new_points.size()-2}));
 
         }else if (outside.size() == 2){
-            Vector3D outside_point1 = outside[0];
-            Vector3D outside_point2 = outside[1];
-            Vector3D inside_point = inside[0];
+            const Vector3D& outside_point1 = outside[0];
+            const Vector3D& outside_point2 = outside[1];
+            const Vector3D& inside_point = inside[0];
 
             double p = CalculateP(dval, inside_point, outside_point1, type, dNear);
             Vector3D new_point_1 = Vector3D::point(p*outside_point1+(1-p)*inside_point);

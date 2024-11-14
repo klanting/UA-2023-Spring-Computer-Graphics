@@ -21,21 +21,21 @@ using Lines2D = list<Line2D*>;
 namespace tool2D{
 
     img::EasyImage draw2DLines(const Lines2D &lines, const int size, const Color &bc, bool do_z_buf){
+        /**
+         * Make an image containing the provided 2D lines
+         * */
         vector<double> min_max = get_ranges(lines);
         pair<double, double> ranges = make_pair(min_max[1]-min_max[0],min_max[3]-min_max[2]);
         pair<double, double> image_size = get_image_size(ranges, size);
-
 
         double d = get_scale_factor(ranges, image_size, 0.95);
         use_scale_factor(lines, d);
         pair<double, double> deviation = get_deviation(image_size, min_max, d);
         use_add_factor(lines, deviation.first, deviation.second);
 
-
         img::EasyImage image(lround(image_size.first), lround(image_size.second));
 
         img::Color easy_bc(lround(bc.getRed()*255), lround(bc.getGreen()*255), lround(bc.getBlue()*255));
-
 
         image.clear(easy_bc);
 
@@ -93,8 +93,6 @@ namespace tool2D{
 
             }
         }
-
-
         vector<double> result = {min_x, max_x, min_y, max_y};
         return result;
     }
@@ -117,8 +115,6 @@ namespace tool2D{
         for (Line2D* l: lines){
             delete l;
         }
-
-
         return image;
 
     }
@@ -133,10 +129,6 @@ namespace tool2D{
                     lines.push_back(l);
                 }
                 index += 1;
-
-                //cout << l->p1.x << " " << l->p1.y << " " << l->p2.x << " " << l->p2.y << endl;
-
-
             }
         }
 
@@ -144,7 +136,6 @@ namespace tool2D{
         for (Line2D* l: lines){
             delete l;
         }
-
 
         return image;
     }
@@ -180,7 +171,6 @@ namespace tool2D{
         double image_x = size*ranges.first/max_range;
         double image_y = size*ranges.second/max_range;
         return make_pair(image_x, image_y);
-
     }
 
     double get_scale_factor(const pair<double, double> &ranges, const pair<double, double> &images_size, double margin){
@@ -194,7 +184,6 @@ namespace tool2D{
             line->p1.y = line->p1.y*d;
             line->p2.x = line->p2.x*d;
             line->p2.y = line->p2.y*d;
-
         }
     }
 
@@ -214,7 +203,6 @@ namespace tool2D{
             line->p1.y = line->p1.y+dy;
             line->p2.x = line->p2.x+dx;
             line->p2.y = line->p2.y+dy;
-
         }
     }
 
@@ -224,11 +212,9 @@ namespace tool2D{
          * */
         figure->DoProjection(d);
 
-
         for (auto &p: figure->points){
             p.x += deviation.first;
             p.y += deviation.second;
-
 
         }
     }
@@ -259,7 +245,6 @@ namespace tool2D{
 
                 face.normaal.normalise();
             }
-
 
         }
     }
@@ -320,7 +305,6 @@ namespace tool2D{
                     }
 
                 }
-
                 valid_x_i.clear();
             }
 
@@ -337,7 +321,7 @@ namespace tool2D{
         for (auto& figure: figures){
             determineFaceData(figure, d, true);
 
-            figure->DifuusLichtInf(lights);
+            figure->DiffuseLightInf(lights);
 
             doFigureProjection(figure, d, deviation);
 

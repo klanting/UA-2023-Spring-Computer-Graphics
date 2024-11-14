@@ -384,13 +384,6 @@ namespace Bodies3D{
             Vector3D H = Vector3D::point((2*C.x+A.x)/3, (2*C.y+A.y)/3, (2*C.z+A.z)/3);
             Vector3D I = Vector3D::point((C.x+2*A.x)/3, (C.y+2*A.y)/3, (C.z+2*A.z)/3);
 
-            //D.normalise();
-            //E.normalise();
-            //F.normalise();
-            //G.normalise();
-            //H.normalise();
-            //I.normalise();
-
             if (point_side.find(make_pair(face.points[0], face.points[1])) == point_side.end()){
                 new_points.push_back(D); //size -6
             }
@@ -451,10 +444,6 @@ namespace Bodies3D{
                 change += 1;
             }
 
-
-
-
-
             change_pos[face.points[0]].insert({D_index, I_index}); //LINK D to I for A
 
             change_pos[face.points[1]].insert({F_index, E_index}); //LINK F to E for B
@@ -474,10 +463,7 @@ namespace Bodies3D{
             point_side[make_pair(face.points[2], face.points[0])] = H_index; // store H at 2/3C and 1/3A
             point_side[make_pair(face.points[0], face.points[2])] = I_index; // store I at 2/3A and 1/3C
 
-
-
         }
-
 
         for (auto entry: change_pos){
             int next = (*entry.second.begin()).second;
@@ -490,8 +476,7 @@ namespace Bodies3D{
 
         }
 
-        Figure* fig = new Figure(new_points, new_faces, c);
-
+        auto* fig = new Figure(new_points, new_faces, c);
 
         return fig;
 
@@ -541,7 +526,6 @@ namespace Bodies3D{
                 new_sub_figure = CreateMengerSponge(fig->ambient_color);
             }
 
-
             vector<vector<int>> faces;
             new_sub_figure->Scalar(1/scale);
             new_sub_figure->reflections = fig->reflections;
@@ -557,14 +541,12 @@ namespace Bodies3D{
             double diff_y = p.y-link_p.y;
             double diff_z = p.z-link_p.z;
 
-            new_sub_figure->Translatie(Vector3D::point(diff_x, diff_y, diff_z));
+            new_sub_figure->translation(Vector3D::point(diff_x, diff_y, diff_z));
 
             generateFractal(new_sub_figure, fractal_output, nr_iterations-1, scale*original_scale, scale, type);
         }
 
         delete fig;
-
-
     }
 
     void makeThick(Figure* fig, vector<Figure*>& fractal_output, double radius, int m, int n){
@@ -608,12 +590,8 @@ namespace Bodies3D{
                 cylinder->FullRotScaleMove(0, 0, 0, radius, p1);
 
                 fractal_output.push_back(cylinder);
-
-
             }
-            //break;
         }
     }
-
 
 }

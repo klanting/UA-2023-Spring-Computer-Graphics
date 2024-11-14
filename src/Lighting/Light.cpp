@@ -65,7 +65,7 @@ void Light::EyePerspectifTransform(const Vector3D &eye_cords, const Vector3D &vi
 
 void Light::shadow_transform(const vector<Figure*>& figures) {
     for (auto f: figures){
-        f->EyePerspectifTransform(location);
+        f->EyePerspectiveTransform(location);
         f->DoProjection(1);
 
         EyePerspective* eye_position = new EyePerspective{location};
@@ -76,7 +76,7 @@ void Light::shadow_transform(const vector<Figure*>& figures) {
 
 
     for (auto f: figures){
-        f->EyeUnPerspectifTransform(location);
+        f->EyeUnPerspectiveTransform(location);
     }
 
 

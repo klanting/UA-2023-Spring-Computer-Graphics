@@ -42,20 +42,20 @@ public:
 
     Color ambient_color = Color(0, 0, 0);
 
-    void EyePerspectifTransform(const Vector3D &eye_cords);
+    void EyePerspectiveTransform(const Vector3D &eye_cords);
     void EyeTransformFace();
-    void EyeUnPerspectifTransform(const Vector3D &eye_cords);
-    void EyePerspectifTransform(const Vector3D &eye_cords, const Vector3D& view_dir);
+    void EyeUnPerspectiveTransform(const Vector3D &eye_cords);
+    void EyePerspectiveTransform(const Vector3D &eye_cords, const Vector3D& view_dir);
     void DoProjection(double d);
     void RotateX(double angle_degree);
     void RotateY(double angle_degree);
     void RotateZ(double angle_degree);
     void Scalar(double scale);
     void FullRotScaleMove(double angle_x, double angle_y, double angle_z, double scale, const Vector3D &center);
-    void Translatie(const Vector3D &center);
+    void translation(const Vector3D &center);
     void Triangulate();
     void UndoProjection(double d);
-    void DifuusLichtInf(const vector<Light*>& lights);
+    void DiffuseLightInf(const vector<Light*>& lights);
     Vector3D getOriginal(const Vector3D& point, bool has_point);
     TextureMap* texture = nullptr;
     bool useTexture = false;

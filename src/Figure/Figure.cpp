@@ -8,6 +8,9 @@
 #include <limits>
 
 Figure::Figure(const vector<Vector3D> &points, const vector<vector<int>> &lines, const Color &c) : points(points), ambient_color(c){
+    /**
+     * Constructor of a Figure object representing a 3D shape
+     * */
     faces.reserve(lines.size());
 
     /*
@@ -20,6 +23,9 @@ Figure::Figure(const vector<Vector3D> &points, const vector<vector<int>> &lines,
 
 Figure::Figure(const vector<Vector3D> &points, const vector<vector<int>> &lines, const vector<vector<Vector3D>> &uv, const vector<vector<Vector3D>> &v_normaal,
                const Color &c) : points(points), ambient_color(c) {
+    /**
+     * Constructor of a Figure object representing a 3D shape
+     * */
 
     faces.reserve(lines.size());
     /*
@@ -35,12 +41,11 @@ Figure::Figure(const vector<Vector3D> &points, const vector<vector<int>> &lines,
             f.uv_map[lines[i][j]] = uv[i][j];
             f.normaal_map[lines[i][j]] = v_normaal[i][j];
         }
-
     }
 }
 
 
-void Figure::EyePerspectifTransform(const Vector3D &eye_cords) {
+void Figure::EyePerspectiveTransform(const Vector3D &eye_cords) {
     double r = sqrt(pow(eye_cords.x, 2)+pow(eye_cords.y, 2)+pow(eye_cords.z, 2));
     double temp = eye_cords.z/r;
 
@@ -61,13 +66,10 @@ void Figure::EyePerspectifTransform(const Vector3D &eye_cords) {
 
     for (auto &point: points){
         point = point*eyeMatrix;
-
-
     }
-
 }
 
-void Figure::EyePerspectifTransform(const Vector3D &eye_cords, const Vector3D& view_dir) {
+void Figure::EyePerspectiveTransform(const Vector3D &eye_cords, const Vector3D& view_dir) {
     Vector3D dir = view_dir*-1;
     double r = sqrt(pow(eye_cords.x, 2)+pow(eye_cords.y, 2)+pow(eye_cords.z, 2));
     double r_dir = sqrt(pow(dir.x, 2)+pow(dir.y, 2)+pow(dir.z, 2));
@@ -87,11 +89,9 @@ void Figure::EyePerspectifTransform(const Vector3D &eye_cords, const Vector3D& v
 
     eyeMatrix(4,3) = -r;
 
-
     for (auto &point: points){
         point = point*eyeMatrix;
     }
-
 }
 
 
@@ -103,8 +103,6 @@ void Figure::DoProjection(double d) {
         point.x = x_acc;
         point.y = y_acc;
     }
-
-
 }
 
 
@@ -198,7 +196,7 @@ void Figure::FullRotScaleMove(double angle_x, double angle_y, double angle_z, do
 
 }
 
-void Figure::Translatie(const Vector3D &center) {
+void Figure::translation(const Vector3D &center) {
     Matrix TranslatieMatrix;
     TranslatieMatrix(4, 1) = center.x;
     TranslatieMatrix(4, 2) = center.y;
@@ -242,7 +240,7 @@ void Figure::UndoProjection(double d) {
 
 }
 
-void Figure::DifuusLichtInf(const vector<Light *> &lights) {
+void Figure::DiffuseLightInf(const vector<Light *> &lights) {
     for (auto& face: faces){
         Vector3D normaal_copy = face.normaal;
         normaal_copy.normalise();
@@ -259,11 +257,10 @@ void Figure::DifuusLichtInf(const vector<Light *> &lights) {
         Color difuus_color = reflections.diffuse_color;
 
         face.difuus_inf = Color(result.getRed()*difuus_color.getRed(), result.getGreen()*difuus_color.getGreen(), result.getBlue()*difuus_color.getBlue());
-
     }
 }
 
-void Figure::EyeUnPerspectifTransform(const Vector3D &eye_cords) {
+void Figure::EyeUnPerspectiveTransform(const Vector3D &eye_cords) {
     double r = sqrt(pow(eye_cords.x, 2) + pow(eye_cords.y, 2) + pow(eye_cords.z, 2));
     double temp = eye_cords.z / r;
 
@@ -285,47 +282,37 @@ void Figure::EyeUnPerspectifTransform(const Vector3D &eye_cords) {
 
     for (auto &point: points) {
         point = point * eyeMatrix;
-
-
     }
 }
 
 Vector3D Figure::getOriginal(const Vector3D &point, bool has_point) {
+    /*
+     * The provided point is a projection of the figure onto a 2D surface,
+     * This method wants to retrieve the original 3D position of this point before its projection
+     * */
     if (eye_perspective->getR() == 0){
         return Vector3D::point(0, 0, 0);
     }
 
-    auto a = eye_perspective->getEyeMatrixPointInverse();
-    auto b = eye_perspective->getEyeMatrixPointlessInverse();
-
+    Matrix reverse_matrix;
     if (has_point){
-
-        return point*eye_perspective->getEyeMatrixPointInverse();
+        reverse_matrix = eye_perspective->getEyeMatrixPointInverse();
     }else{
-        return point*eye_perspective->getEyeMatrixPointlessInverse();
-
-
+        reverse_matrix = eye_perspective->getEyeMatrixPointlessInverse();
     }
+
+    return point*reverse_matrix;
 
 }
 
 void Figure::EyeTransformFace() {
-
     for(auto& face: faces){
         for(auto& v: face.normaal_map){
             v.second = v.second* eye_perspective->getEyeMatrixPointLess();
         }
-
     }
 }
 
 void Figure::setEye(EyePerspective* eye_perspective) {
-
     Figure::eye_perspective = eye_perspective;
-
 }
-
-
-
-
-

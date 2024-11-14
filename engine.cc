@@ -337,7 +337,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
             f->setEye(eye_position);
 
             if (clipping){
-                f->EyePerspectifTransform(eye, view_dir);
+                f->EyePerspectiveTransform(eye, view_dir);
                 double hfov = M_PI/180*configuration["General"]["hfov"].as_double_or_die();
                 double dNear = configuration["General"]["dNear"].as_double_or_die();
                 double dFar = configuration["General"]["dFar"].as_double_or_die();
@@ -356,7 +356,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
                 Clipping::clipBottom(f, dNear, dTop*-1);
 
             }else{
-                f->EyePerspectifTransform(eye);
+                f->EyePerspectiveTransform(eye);
             }
 
             f->EyeTransformFace();
