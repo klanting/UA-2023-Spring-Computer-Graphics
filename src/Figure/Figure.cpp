@@ -316,3 +316,19 @@ void Figure::EyeTransformFace() {
 void Figure::setEye(EyePerspective* eye_perspective) {
     Figure::eye_perspective = eye_perspective;
 }
+
+Lines2D Figure::get2DLines() const {
+    /**
+     * Return the Lines representing the Figure
+     * */
+    Lines2D lines;
+    int index = 0;
+    for (Face f: faces){
+        for (int i=0; i< f.points.size(); i++){
+            Line2D* l = new Line2D(points[f.points[i]], points[f.points[(i+1)%f.points.size()]], ambient_color);
+            lines.push_back(l);
+        }
+        index += 1;
+    }
+    return lines;
+}

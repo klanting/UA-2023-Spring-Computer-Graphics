@@ -19,7 +19,7 @@
 #include "../Textures/TextureCoord.h"
 #include "../Perspective/EyePerspective.h"
 using namespace std;
-
+using Lines2D = list<Line2D*>;
 
 struct Reflections{
     Color ambient_intensity = Color(0, 0, 0);
@@ -56,6 +56,9 @@ public:
     void Triangulate();
     void UndoProjection(double d);
     void DiffuseLightInf(const vector<Light*>& lights);
+
+    [[nodiscard]] Lines2D get2DLines() const;
+
     Vector3D getOriginal(const Vector3D& point, bool has_point);
     TextureMap* texture = nullptr;
     bool useTexture = false;

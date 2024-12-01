@@ -66,6 +66,10 @@ namespace tool2D{
     }
 
     vector<double> get_ranges(const vector<Figure*> &figures){
+        /**
+         * Retrieve the 2D ranges of the figures there positions, this is used to show the entire image,
+         * without leaving empty space
+         * */
         double min_x = numeric_limits<double>::max();
         double max_x = -numeric_limits<double>::max();
         double min_y = numeric_limits<double>::max();
@@ -75,21 +79,11 @@ namespace tool2D{
 
             for (Vector3D& p : figure->points){
 
-                if (p.x < min_x){
-                    min_x = p.x;
-                }
+                min_x = min(min_x, p.x);
+                max_x = max(max_x, p.x);
 
-                if (p.x > max_x){
-                    max_x = p.x;
-                }
-
-                if (p.y < min_y){
-                    min_y = p.y;
-                }
-
-                if (p.y > max_y){
-                    max_y = p.y;
-                }
+                min_y = min(min_y, p.y);
+                max_y = max(max_y, p.y);
 
             }
         }
@@ -99,6 +93,9 @@ namespace tool2D{
 
 
     img::EasyImage draw2DLines_z_buffering(const vector<Figure*> &figures, int size, const Color &bc){
+        /**
+         * Draw 2D lines, taking into account Z-buffering
+         * */
         Lines2D lines;
         for (auto figure: figures){
             int index = 0;
