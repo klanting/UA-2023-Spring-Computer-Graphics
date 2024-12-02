@@ -40,6 +40,7 @@ namespace tool2D{
         image.clear(easy_bc);
 
         if (do_z_buf){
+            std::cout << min_max[1]-min_max[0]<<" "<<min_max[3]-min_max[2] << std::endl;
             ZBuffer z_buf((unsigned int) image_size.first, (unsigned int) image_size.second);
             for (Line2D* line: lines){
                 img::Color easy_c(lround(line->color.getRed()*255), lround(line->color.getGreen()*255), lround(line->color.getBlue()*255));
@@ -96,18 +97,19 @@ namespace tool2D{
         /**
          * Draw 2D lines, taking into account Z-buffering
          * */
+
         Lines2D lines;
         for (auto figure: figures){
             int index = 0;
             for (Face f: figure->faces){
                 for (int i=0; i< f.points.size(); i++){
+
                     Line2D* l = new Line2D(figure->points[f.points[i]], figure->points[f.points[(i+1)%f.points.size()]], figure->ambient_color);
                     lines.push_back(l);
                 }
                 index += 1;
             }
         }
-
         img::EasyImage image = tool2D::draw2DLines(lines, size, bc, true);
         for (Line2D* l: lines){
             delete l;

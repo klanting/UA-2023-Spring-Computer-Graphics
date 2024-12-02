@@ -307,7 +307,7 @@ void img::EasyImage::draw_line_zbuf(unsigned int x0, unsigned int y0, double z0,
             double p = (i-std::min(y0, y1))/a;
             double dif_zi = p/zt1+(1-p)/zt0;
             if (dif_zi < z_buf.get(x0,i)){
-                z_buf.set(x0, y0, dif_zi);
+                z_buf.set(x0, i, dif_zi);
                 (*this)(x0, i) = color;
             }
 
